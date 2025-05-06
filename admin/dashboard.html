@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Invet Chat</title>
+  <meta name="description" content="Admin dashboard for Invet Chat platform">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="font-inter bg-gradient-to-b from-purple-950 via-purple-900 to-indigo-950">
+  <!-- Firebase Config Warning -->
+  <div id="firebase-warning" class="hidden fixed top-0 left-0 w-full bg-yellow-500 text-black p-4 z-50">
+    <div class="container mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+        <span>Firebase configuration is missing or incomplete. Some features may not work properly.</span>
+      </div>
+      <button id="close-firebase-warning" class="text-black hover:text-gray-800">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <div class="flex items-center gap-2">
+          <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-400 flex items-center justify-center">
+            <span class="text-xs font-bold text-white">I</span>
+          </div>
+          <span class="text-lg font-bold text-white">Invet Admin</span>
+        </div>
+        <button id="mobile-sidebar-close" class="md:hidden text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+      </div>
+
+      <nav class="admin-sidebar-nav">
+        <a href="dashboard.html" class="admin-nav-item active">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="orders.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span>Orders</span>
+        </a>
+        <a href="users.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Users</span>
+        </a>
+        <a href="teams.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height  class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Teams</span>
+        </a>
+        <a href="finances.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></svg>
+          <span>Finances</span>
+        </a>
+        <a href="chats.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Chats</span>
+        </a>
+        <a href="settings.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="admin-sidebar-footer">
+        <a href="../index.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+          <span>Back to Home</span>
+        </a>
+        <a href="../login.html" class="admin-nav-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Admin Main Content -->
+    <main class="admin-main">
+      <!-- Mobile Header -->
+      <div class="admin-mobile-header">
+        <button id="mobile-sidebar-open" class="admin-icon-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-400 flex items-center justify-center">
+            <span class="text-xs font-bold text-white">I</span>
+          </div>
+          <span class="text-lg font-bold text-white">Invet Admin</span>
+        </div>
+        <button id="theme-toggle" class="admin-icon-button">
+          <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+          <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+        </button>
+      </div>
+
+      <!-- Admin Content -->
+      <div class="admin-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+          <div class="welcome-banner-content">
+            <h1 class="text-2xl font-bold text-white md:text-3xl">Welcome back, Admin</h1>
+            <p class="text-purple-200">Here's what's happening with your platform today.</p>
+          </div>
+          <div class="welcome-banner-date">
+            <div class="text-right">
+              <div class="text-sm text-purple-300" id="current-date">Loading date...</div>
+              <div class="text-2xl font-bold text-white" id="current-time">00:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid gap-6 md:grid-cols-4">
+          <div class="stats-card">
+            <div class="stats-card-content">
+              <h3 class="stats-card-title">Total Orders</h3>
+              <p class="stats-card-value">1,284</p>
+              <p class="stats-card-change stats-card-change-up">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg>
+                <span>12.5%</span>
+              </p>
+            </div>
+            <div class="stats-card-icon bg-purple-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            </div>
+          </div>
+
+          <div class="stats-card">
+            <div class="stats-card-content">
+              <h3 class="stats-card-title">Revenue</h3>
+              <p class="stats-card-value">$52,489</p>
+              <p class="stats-card-change stats-card-change-up">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg>
+                <span>8.2%</span>
+              </p>
+            </div>
+            <div class="stats-card-icon bg-green-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></svg>
+            </div>
+          </div>
+
+          <div class="stats-card">
+            <div class="stats-card-content">
+              <h3 class="stats-card-title">Active Teams</h3>
+              <p class="stats-card-value">24</p>
+              <p class="stats-card-change stats-card-change-up">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg>
+                <span>4.1%</span>
+              </p>
+            </div>
+            <div class="stats-card-icon bg-blue-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+          </div>
+
+          <div class="stats-card">
+            <div class="stats-card-content">
+              <h3 class="stats-card-title">Active Chats</h3>
+              <p class="stats-card-value">156</p>
+              <p class="stats-card-change stats-card-change-down">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 12-7 7-7-7"></path><path d="M12 5v14"></path></svg>
+                <span>2.3%</span>
+              </p>
+            </div>
+            <div class="stats-card-icon bg-indigo-600">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid gap-6 md:grid-cols-2">
+          <!-- Revenue Chart -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3 class="chart-card-title">Revenue Overview</h3>
+              <div class="chart-card-actions">
+                <select class="chart-select">
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly" selected>Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="revenue-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Order Status Chart -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <h3 class="chart-card-title">Order Status</h3>
+              <div class="chart-card-actions">
+                <select class="chart-select">
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly" selected>Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-container">
+              <canvas id="order-status-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders & Team Performance -->
+        <div class="grid gap-6 md:grid-cols-2">
+          <!-- Recent Orders -->
+          <div class="data-card">
+            <div class="data-card-header">
+              <h3 class="data-card-title">Recent Orders</h3>
+              <a href="orders.html" class="data-card-link">
+                View All
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </a>
+            </div>
+            <div class="data-card-content">
+              <div class="data-table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Status</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>#ORD-1234</td>
+                      <td>John Smith</td>
+                      <td><span class="status-badge status-completed">Completed</span></td>
+                      <td>$345.00</td>
+                    </tr>
+                    <tr>
+                      <td>#ORD-1235</td>
+                      <td>Sarah Johnson</td>
+                      <td><span class="status-badge status-processing">Processing</span></td>
+                      <td>$528.50</td>
+                    </tr>
+                    <tr>
+                      <td>#ORD-1236</td>
+                      <td>Michael Brown</td>
+                      <td><span class="status-badge status-pending">Pending</span></td>
+                      <td>$125.99</td>
+                    </tr>
+                    <tr>
+                      <td>#ORD-1237</td>
+                      <td>Emily Davis</td>
+                      <td><span class="status-badge status-completed">Completed</span></td>
+                      <td>$892.00</td>
+                    </tr>
+                    <tr>
+                      <td>#ORD-1238</td>
+                      <td>Robert Wilson</td>
+                      <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                      <td>$245.50</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Performance -->
+          <div class="data-card">
+            <div class="data-card-header">
+              <h3 class="data-card-title">Team Performance</h3>
+              <a href="teams.html" class="data-card-link">
+                View All
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </a>
+            </div>
+            <div class="data-card-content">
+              <div class="data-table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th>Orders</th>
+                      <th>Revenue</th>
+                      <th>Performance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Sales Team A</td>
+                      <td>245</td>
+                      <td>$12,450</td>
+                      <td>
+                        <div class="performance-bar-container">
+                          <div class="performance-bar" style="width: 85%; background-color: #10b981;"></div>
+                          <span>85%</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Sales Team B</td>
+                      <td>182</td>
+                      <td>$9,340</td>
+                      <td>
+                        <div class="performance-bar-container">
+                          <div class="performance-bar" style="width: 72%; background-color: #3b82f6;"></div>
+                          <span>72%</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Marketing</td>
+                      <td>132</td>
+                      <td>$6,780</td>
+                      <td>
+                        <div class="performance-bar-container">
+                          <div class="performance-bar" style="width: 65%; background-color: #8b5cf6;"></div>
+                          <span>65%</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Support</td>
+                      <td>98</td>
+                      <td>$4,890</td>
+                      <td>
+                        <div class="performance-bar-container">
+                          <div class="performance-bar" style="width: 58%; background-color: #ec4899;"></div>
+                          <span>58%</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Development</td>
+                      <td>76</td>
+                      <td>$3,840</td>
+                      <td>
+                        <div class="performance-bar-container">
+                          <div class="performance-bar" style="width: 45%; background-color: #f59e0b;"></div>
+                          <span>45%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/main.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+</body>
+</html>
