@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer Bypass - Invet Chat</title>
+  <meta name="description" content="Developer access to Invet Chat platform">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-inter">
+  <!-- Animated Background -->
+  <canvas id="auth-background" class="fixed inset-0 -z-10"></canvas>
+
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <!-- Auth Card -->
+      <div class="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-xl overflow-hidden">
+        <!-- Header -->
+        <div class="p-6 text-center border-b border-white/10">
+          <a href="index.html" class="inline-block">
+            <div class="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-r from-green-600 to-teal-600 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            </div>
+          </a>
+          <h1 class="text-2xl font-bold text-white">Developer Mode</h1>
+          <p class="text-green-200 mt-2">Bypass authentication for testing</p>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <div class="rounded-lg border border-green-500/30 bg-green-500/10 p-4 mb-6">
+            <h3 class="text-lg font-medium text-white flex items-center mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              Developer Access
+            </h3>
+            <p class="text-sm text-green-200 mb-3">
+              This mode allows you to access all parts of the application without requiring authentication.
+            </p>
+            <p class="text-xs text-green-300">
+              Note: This mode is only available in development and testing environments.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div class="form-group">
+              <label for="dev-role" class="form-label text-white">Access Role</label>
+              <select id="dev-role" class="form-input bg-white/10 border-green-500/30 text-white focus:border-green-400 transition-all">
+                <option value="admin">Admin</option>
+                <option value="team">Team Member</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dev-destination" class="form-label text-white">Destination</label>
+              <select id="dev-destination" class="form-input bg-white/10 border-green-500/30 text-white focus:border-green-400 transition-all">
+                <option value="admin/dashboard.html">Admin Dashboard</option>
+                <option value="admin/users.html">Admin Users</option>
+                <option value="admin/teams.html">Admin Teams</option>
+                <option value="admin/orders.html">Admin Orders</option>
+                <option value="admin/chats.html">Admin Chats</option>
+                <option value="admin/finances.html">Admin Finances</option>
+                <option value="chat.html">Team Chat</option>
+                <option value="team/dashboard.html">Team Dashboard</option>
+                <option value="team/orders.html">Team Orders</option>
+              </select>
+            </div>
+
+            <button id="activate-dev-mode" class="w-full py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md flex items-center justify-center">
+              <span>Activate Developer Mode</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+          </div>
+
+          <div class="mt-6 space-y-4">
+            <h3 class="text-lg font-medium text-white">Quick Access</h3>
+            
+            <div class="grid grid-cols-2 gap-3">
+              <a href="admin/dashboard.html" class="block" onclick="setDevMode('admin', event)">
+                <button class="w-full border border-green-500/30 bg-green-500/10 text-white hover:bg-green-500/20 py-2 rounded-md flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+                  Admin Dashboard
+                </button>
+              </a>
+              <a href="chat.html" class="block" onclick="setDevMode('team', event)">
+                <button class="w-full border border-green-500/30 bg-green-500/10 text-white hover:bg-green-500/20 py-2 rounded-md flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  Team Chat
+                </button>
+              </a>
+            </div>
+          </div>
+
+          <div class="mt-6 text-center">
+            <a href="index.html" class="text-green-300 hover:text-white inline-flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+              Back to Home
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="js/auth-background.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const activateDevMode = document.getElementById("activate-dev-mode");
+      const devRole = document.getElementById("dev-role");
+      const devDestination = document.getElementById("dev-destination");
+      
+      activateDevMode.addEventListener("click", () => {
+        const role = devRole.value;
+        const destination = devDestination.value;
+        
+        // Show loading state
+        activateDevMode.disabled = true;
+        activateDevMode.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Activating...';
+        
+        // Store dev mode in session storage
+        sessionStorage.setItem("devMode", "active");
+        sessionStorage.setItem("devRole", role);
+        
+        // Redirect after a short delay
+        setTimeout(() => {
+          window.location.href = destination;
+        }, 1000);
+      });
+      
+      // Helper function for quick access buttons
+      window.setDevMode = function(role, event) {
+        event.preventDefault();
+        sessionStorage.setItem("devMode", "active");
+        sessionStorage.setItem("devRole", role);
+        window.location.href = event.currentTarget.getAttribute("href");
+      };
+    });
+  </script>
+</body>
+</html>
