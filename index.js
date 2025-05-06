@@ -44,9 +44,9 @@
 </head>
 <body>
     <div class="content">
-        <p>welcome to jayson's site</p>
-        <p>idk what to type here,<br> not a lot going on</p>
-        <p><a href="http://ilovemoney.lol/jayson">ilovemoney.lol/jayson</a> <span class="folder">📁</span> <span class="icon">👤</span></p>
+        <p>test</p>
+        <p>invet.info</p>
+        <p><a href="http://invet.info">something</a> <span class="folder">📁</span> <span class="icon">👤</span></p>
     </div>
 </body>
 </html>
