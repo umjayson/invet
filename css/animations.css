@@ -1,0 +1,30 @@
+/* Animation for elements that should animate when they enter the viewport */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Grid overlay styling */
+#grid-overlay {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Feature card animations with delay */
+.feature-card.visible {
+  animation: fadeInUp 0.5s forwards;
+  animation-delay: calc(var(--index, 0) * 0.1s);
+}
+
+/* Testimonial card animations with delay */
+.testimonial-card.visible {
+  animation: fadeInUp 0.5s forwards;
+  animation-delay: calc(var(--index, 0) * 0.1s);
+}
