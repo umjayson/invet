@@ -1,13 +1,9 @@
-// Import AuthContext (assuming it's in a separate file)
-import { AuthContext } from "./auth-context.js"
-
 // This file handles authentication UI interactions
 document.addEventListener("DOMContentLoaded", () => {
   // Get form elements if they exist
   const loginForm = document.getElementById("login-form")
   const registerForm = document.getElementById("register-form")
   const forgotPasswordForm = document.getElementById("forgot-password-form")
-  const resetPasswordForm = document.getElementById("reset-password-form")
   const logoutButtons = document.querySelectorAll(".logout-button")
 
   // Handle login form submission
@@ -17,30 +13,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const email = document.getElementById("email").value
       const password = document.getElementById("password").value
+      const rememberMe = document.getElementById("remember")?.checked || false
       const errorElement = document.getElementById("login-error")
       const loadingElement = document.getElementById("login-loading")
+      const loginButton = document.querySelector(".auth-button")
 
       if (errorElement) errorElement.textContent = ""
       if (loadingElement) loadingElement.classList.remove("hidden")
+      if (loginButton) {
+        loginButton.disabled = true
+        loginButton.querySelector("span").style.opacity = "0.5"
+      }
 
       try {
-        await AuthContext.login(email, password)
+        // Set persistence based on remember me checkbox
+        const persistence = rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION
+
+        await firebase.auth().setPersistence(persistence)
+
+        // Login with Firebase
+        await window.AuthContext.login(email, password)
 
         // Redirect based on role
-        if (AuthContext.userRole === "admin") {
-          window.location.href = "/admin/dashboard.html"
-        } else if (AuthContext.userRole === "team") {
-          window.location.href = "/team/dashboard.html"
-        } else if (AuthContext.userRole === "employee") {
-          window.location.href = "/employee/dashboard.html"
-        } else {
-          window.location.href = "/index.html"
+        const user = window.AuthContext.getCurrentUser()
+        if (user) {
+          switch (user.role) {
+            case "admin":
+              window.location.href = "/admin/dashboard.html"
+              break
+            case "team":
+              window.location.href = "/team/dashboard.html"
+              break
+            case "employee":
+              window.location.href = "/employee/dashboard.html"
+              break
+            default:
+              window.location.href = "/index.html"
+          }
         }
       } catch (error) {
-        if (errorElement) errorElement.textContent = error.message
         console.error("Login error:", error)
+        if (errorElement) {
+          if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+            errorElement.textContent = "Invalid email or password"
+          } else if (error.code === "auth/too-many-requests") {
+            errorElement.textContent = "Too many failed login attempts. Please try again later"
+          } else {
+            errorElement.textContent = error.message || "An error occurred during login"
+          }
+        }
       } finally {
         if (loadingElement) loadingElement.classList.add("hidden")
+        if (loginButton) {
+          loginButton.disabled = false
+          loginButton.querySelector("span").style.opacity = "1"
+        }
       }
     })
   }
@@ -53,34 +80,51 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = document.getElementById("email").value
       const password = document.getElementById("password").value
       const name = document.getElementById("name").value
-      const role =
-        document.querySelector('input[name="role"]:checked')?.value ||
-        document.getElementById("role")?.value ||
-        "employee"
+      const pin = document.getElementById("pin").value
+      const role = document.querySelector('input[name="role"]:checked')?.value || "employee"
       const errorElement = document.getElementById("register-error")
       const loadingElement = document.getElementById("register-loading")
+      const registerButton = document.querySelector(".auth-button")
 
       if (errorElement) errorElement.textContent = ""
       if (loadingElement) loadingElement.classList.remove("hidden")
+      if (registerButton) {
+        registerButton.disabled = true
+        registerButton.querySelector("span").style.opacity = "0.5"
+      }
 
       try {
-        await AuthContext.register(email, password, name, role)
+        // Register with Firebase
+        await window.AuthContext.register(email, password, name, role, pin)
 
         // Redirect based on role
-        if (AuthContext.userRole === "admin") {
-          window.location.href = "/admin/dashboard.html"
-        } else if (AuthContext.userRole === "team") {
-          window.location.href = "/team/dashboard.html"
-        } else if (AuthContext.userRole === "employee") {
-          window.location.href = "/employee/dashboard.html"
-        } else {
-          window.location.href = "/index.html"
+        const user = window.AuthContext.getCurrentUser()
+        if (user) {
+          switch (user.role) {
+            case "admin":
+              window.location.href = "/admin/dashboard.html"
+              break
+            case "team":
+              window.location.href = "/team/dashboard.html"
+              break
+            case "employee":
+              window.location.href = "/employee/dashboard.html"
+              break
+            default:
+              window.location.href = "/index.html"
+          }
         }
       } catch (error) {
-        if (errorElement) errorElement.textContent = error.message
         console.error("Registration error:", error)
+        if (errorElement) {
+          errorElement.textContent = error.message || "An error occurred during registration"
+        }
       } finally {
         if (loadingElement) loadingElement.classList.add("hidden")
+        if (registerButton) {
+          registerButton.disabled = false
+          registerButton.querySelector("span").style.opacity = "1"
+        }
       }
     })
   }
@@ -92,10 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault()
 
         try {
-          await AuthContext.logout()
+          await window.AuthContext.logout()
           window.location.href = "/auth/login.html"
         } catch (error) {
           console.error("Logout error:", error)
+          alert("Failed to log out. Please try again.")
         }
       })
     })
@@ -110,63 +155,38 @@ document.addEventListener("DOMContentLoaded", () => {
       const errorElement = document.getElementById("forgot-password-error")
       const successElement = document.getElementById("forgot-password-success")
       const loadingElement = document.getElementById("forgot-password-loading")
+      const resetButton = document.querySelector(".auth-button")
 
       if (errorElement) errorElement.textContent = ""
       if (successElement) successElement.textContent = ""
       if (loadingElement) loadingElement.classList.remove("hidden")
+      if (resetButton) {
+        resetButton.disabled = true
+        resetButton.querySelector("span").style.opacity = "0.5"
+      }
 
       try {
-        // Simulate password reset email
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        // Send password reset email with Firebase
+        await firebase.auth().sendPasswordResetEmail(email)
 
         if (successElement) {
           successElement.textContent = "Password reset email sent. Check your inbox."
         }
       } catch (error) {
-        if (errorElement) errorElement.textContent = error.message
         console.error("Forgot password error:", error)
+        if (errorElement) {
+          if (error.code === "auth/user-not-found") {
+            errorElement.textContent = "No account found with this email address"
+          } else {
+            errorElement.textContent = error.message || "Failed to send reset email"
+          }
+        }
       } finally {
         if (loadingElement) loadingElement.classList.add("hidden")
-      }
-    })
-  }
-
-  // Handle reset password form
-  if (resetPasswordForm) {
-    resetPasswordForm.addEventListener("submit", async (e) => {
-      e.preventDefault()
-
-      const password = document.getElementById("password").value
-      const confirmPassword = document.getElementById("confirm-password").value
-      const errorElement = document.getElementById("reset-password-error")
-      const successElement = document.getElementById("reset-password-success")
-      const loadingElement = document.getElementById("reset-password-loading")
-
-      if (errorElement) errorElement.textContent = ""
-      if (successElement) successElement.textContent = ""
-      if (loadingElement) loadingElement.classList.remove("hidden")
-
-      try {
-        if (password !== confirmPassword) {
-          throw new Error("Passwords do not match")
+        if (resetButton) {
+          resetButton.disabled = false
+          resetButton.querySelector("span").style.opacity = "1"
         }
-
-        // Simulate password reset
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-
-        if (successElement) {
-          successElement.textContent = "Password has been reset successfully."
-        }
-
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          window.location.href = "/auth/login.html"
-        }, 2000)
-      } catch (error) {
-        if (errorElement) errorElement.textContent = error.message
-        console.error("Reset password error:", error)
-      } finally {
-        if (loadingElement) loadingElement.classList.add("hidden")
       }
     })
   }
@@ -176,20 +196,39 @@ document.addEventListener("DOMContentLoaded", () => {
   if (isProtectedPage) {
     const requiredRole = document.body.dataset.requiredRole
 
-    if (!AuthContext.isAuthenticated()) {
-      // Redirect to login if not authenticated
-      window.location.href = "/auth/login.html?redirect=" + encodeURIComponent(window.location.pathname)
-    } else if (requiredRole && !AuthContext.hasRole(requiredRole)) {
-      // Redirect to appropriate dashboard if role doesn't match
-      if (AuthContext.userRole === "admin") {
-        window.location.href = "/admin/dashboard.html"
-      } else if (AuthContext.userRole === "team") {
-        window.location.href = "/team/dashboard.html"
-      } else if (AuthContext.userRole === "employee") {
-        window.location.href = "/employee/dashboard.html"
-      } else {
-        window.location.href = "/index.html"
+    // Function to check auth and redirect if needed
+    const checkAuth = () => {
+      if (window.AuthContext.loading) {
+        // If still loading, check again in 100ms
+        setTimeout(checkAuth, 100)
+        return
+      }
+
+      if (!window.AuthContext.isAuthenticated()) {
+        // Redirect to login if not authenticated
+        window.location.href = "/auth/login.html?redirect=" + encodeURIComponent(window.location.pathname)
+      } else if (requiredRole && !window.AuthContext.hasRole(requiredRole)) {
+        // Redirect to appropriate dashboard if role doesn't match
+        const user = window.AuthContext.getCurrentUser()
+        if (user) {
+          switch (user.role) {
+            case "admin":
+              window.location.href = "/admin/dashboard.html"
+              break
+            case "team":
+              window.location.href = "/team/dashboard.html"
+              break
+            case "employee":
+              window.location.href = "/employee/dashboard.html"
+              break
+            default:
+              window.location.href = "/index.html"
+          }
+        }
       }
     }
+
+    // Start auth check
+    checkAuth()
   }
 })
