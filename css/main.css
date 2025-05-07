@@ -474,6 +474,128 @@ body {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Add these enhanced platform card styles */
+.platform-card-enhanced {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 20px rgba(147, 51, 234, 0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.platform-card-enhanced:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25), 0 0 25px rgba(147, 51, 234, 0.2);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.platform-card-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+.platform-card-icon-enhanced {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1.5rem;
+  border-radius: 1rem;
+  color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.platform-card-title-enhanced {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.platform-card-description-enhanced {
+  margin-bottom: 1.5rem;
+  color: var(--color-purple-200);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.platform-card-features-enhanced {
+  margin-bottom: 2rem;
+  padding-left: 1.5rem;
+  color: var(--color-purple-300);
+  font-size: 1rem;
+}
+
+.platform-card-features-enhanced li {
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.platform-card-features-enhanced li::before {
+  content: "•";
+  position: absolute;
+  left: -1rem;
+  color: var(--color-purple-400);
+}
+
+.platform-card-button-enhanced {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1.25rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  color: white;
+  border: none;
+  transition: all 0.2s;
+  text-decoration: none;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.platform-card-button-enhanced:hover {
+  filter: brightness(1.1);
+}
+
+.platform-card-button-disabled-enhanced {
+  background-color: var(--color-purple-700);
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.platform-card-button-disabled-enhanced:hover {
+  filter: none;
+}
+
+/* Improve the header logo */
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+
+/* Add a subtle glow to the background */
+.bg-gradient-to-b {
+  position: relative;
+}
+
+.bg-gradient-to-b::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(147, 51, 234, 0.15), transparent 70%);
+  pointer-events: none;
+  z-index: -5;
+}
+
 /* Media Queries */
 @media (min-width: 640px) {
   .sm\:px-6 {
@@ -554,8 +676,30 @@ body {
   }
 }
 
-/* Additional Mobile Optimizations */
+/* Improve mobile responsiveness */
 @media (max-width: 640px) {
+  .platform-card-content {
+    padding: 1.5rem;
+  }
+
+  .platform-card-icon-enhanced {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .platform-card-title-enhanced {
+    font-size: 1.5rem;
+  }
+
+  .platform-card-description-enhanced {
+    font-size: 1rem;
+  }
+
+  .platform-card-button-enhanced {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
   .platform-card-icon {
     width: 3rem;
     height: 3rem;
