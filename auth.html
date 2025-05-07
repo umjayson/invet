@@ -28,11 +28,6 @@
           </a>
           <h1 id="auth-title" class="text-2xl font-bold text-white">Welcome to Invet</h1>
           <p id="auth-subtitle" class="text-purple-200 mt-2">Sign in or create an account</p>
-          
-          <!-- Mode indicator (for testing) -->
-          <div id="mode-indicator" class="hidden mt-2 inline-block rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-300">
-            Testing Mode: <span id="mode-value">standard</span>
-          </div>
         </div>
 
         <!-- Auth Form -->
@@ -53,9 +48,6 @@
                   <input type="text" id="team-code" class="form-input pl-10" placeholder="Enter team code" maxlength="8">
                   <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-300" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
                 </div>
-                <p id="dev-team-hint" class="text-xs text-green-300 mt-1 hidden">
-                  Developer mode: You can use the code "DEVTEAM" to bypass authentication
-                </p>
               </div>
 
               <!-- Admin PIN Section (initially hidden) -->
@@ -66,9 +58,6 @@
                   <input type="password" id="admin-pin" class="form-input pl-10" placeholder="Enter admin PIN">
                   <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-purple-300" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                 </div>
-                <p id="dev-admin-hint" class="text-xs text-green-300 mt-1 hidden">
-                  Developer mode: You can use the PIN "1234" to bypass authentication
-                </p>
               </div>
 
               <div class="form-group">
@@ -131,6 +120,8 @@
               </div>
 
               <!-- Admin PIN Field (for admin signup) -->
+              <div id="admin-signup-pin" class="form-group">
+                <label for="admin-creation-pin  -->
               <div id="admin-signup-pin" class="form-group">
                 <label for="admin-creation-pin" class="form-label">Admin Account Creation PIN</label>
                 <div class="relative">
@@ -325,44 +316,6 @@
               </div>
             </form>
           </div>
-
-          <!-- Developer Mode Section (initially hidden) -->
-          <div id="dev-mode-section" class="mt-6 p-4 rounded-lg border border-green-500/30 bg-green-500/10 hidden">
-            <h3 class="text-lg font-medium text-white flex items-center mb-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-              Developer Mode
-            </h3>
-            <p class="text-sm text-green-200 mb-3">
-              Developer mode allows you to access all parts of the application without requiring authentication.
-            </p>
-            <ul class="text-sm space-y-1 mb-3 text-green-200">
-              <li>• Email: dev@example.com</li>
-              <li>• Password: password</li>
-              <li>• Team Code: DEVTEAM</li>
-              <li>• Admin PIN: 1234</li>
-            </ul>
-            <p class="text-xs text-green-300">
-              Note: This mode is only available in development and testing environments.
-            </p>
-            <div class="mt-3">
-              <label for="dev-destination" class="text-sm font-medium text-white">Destination</label>
-              <select id="dev-destination" class="w-full mt-1 pl-3 py-2 bg-white/10 border border-green-500/30 rounded-md text-white focus:border-green-400 transition-all">
-                <option value="admin/dashboard.html">Admin Dashboard</option>
-                <option value="admin/users.html">Admin Users</option>
-                <option value="admin/teams.html">Admin Teams</option>
-                <option value="admin/orders.html">Admin Orders</option>
-                <option value="admin/chats.html">Admin Chats</option>
-                <option value="admin/finances.html">Admin Finances</option>
-                <option value="chat.html">Team Chat</option>
-                <option value="team/dashboard.html">Team Dashboard</option>
-                <option value="team/orders.html">Team Orders</option>
-              </select>
-            </div>
-            <button id="activate-dev-mode" class="w-full mt-3 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md flex items-center justify-center">
-              <span>Activate Developer Mode</span>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </button>
-          </div>
         </div>
 
         <!-- Footer -->
@@ -371,10 +324,6 @@
             <a href="index.html" class="text-purple-300 hover:text-white inline-flex items-center gap-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
               Back to Home
-            </a>
-            <a href="dev-bypass.html" id="dev-bypass-link" class="text-green-300 hover:text-white inline-flex items-center gap-1 hidden">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-              Developer Bypass
             </a>
           </div>
         </div>
