@@ -1,104 +1,603 @@
-// Auth functionality
+// Initialize Firebase (ensure firebase and firebaseConfig are globally available)
+let firebase
+let firebaseConfig
+
+// Wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", () => {
-  // Tab switching
-  const loginTab = document.querySelector('[data-tab="login"]')
-  const signupTab = document.querySelector('[data-tab="signup"]')
+  // Initialize Firebase
+  initializeFirebase()
+
+  // DOM Elements
   const loginForm = document.getElementById("login-form")
-  const signupForm = document.getElementById("signup-form")
-  const teamCodeSection = document.getElementById("team-code-section")
+  const registerForm = document.getElementById("register-form")
+  const forgotPasswordForm = document.getElementById("forgot-password-form")
+  const successMessage = document.getElementById("success-message")
+  const successTitle = document.getElementById("success-title")
+  const successText = document.getElementById("success-text")
+  const successButton = document.getElementById("success-button")
 
-  if (loginTab && signupTab) {
-    loginTab.addEventListener("click", () => {
-      loginTab.classList.add("active")
-      signupTab.classList.remove("active")
-      loginForm.classList.add("active")
-      signupForm.classList.remove("active")
+  // Tab switching
+  const tabs = document.querySelectorAll(".auth-tab")
+  const tabIndicator = document.querySelector(".auth-tab-indicator")
+  const forms = document.querySelectorAll(".auth-form")
 
-      // Check URL params for mode
-      const urlParams = new URLSearchParams(window.location.search)
-      const mode = urlParams.get("mode")
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const tabName = tab.getAttribute("data-tab")
 
-      if (mode === "team") {
-        teamCodeSection.classList.remove("hidden")
-      } else {
-        teamCodeSection.classList.add("hidden")
-      }
+      // Update active tab
+      tabs.forEach((t) => t.classList.remove("active"))
+      tab.classList.add("active")
+
+      // Move tab indicator
+      const tabIndex = Array.from(tabs).indexOf(tab)
+      tabIndicator.style.left = `${tabIndex * 50}%`
+
+      // Show active form
+      forms.forEach((form) => form.classList.remove("active"))
+      document.getElementById(`${tabName}-form`).classList.add("active")
     })
-
-    signupTab.addEventListener("click", () => {
-      signupTab.classList.add("active")
-      loginTab.classList.remove("active")
-      signupForm.classList.add("active")
-      loginForm.classList.remove("active")
-      teamCodeSection.classList.add("hidden")
-    })
-  }
+  })
 
   // Password visibility toggle
-  const passwordToggles = document.querySelectorAll(".password-toggle")
+  const togglePasswordButtons = document.querySelectorAll(".toggle-password")
 
-  passwordToggles.forEach((toggle) => {
-    toggle.addEventListener("click", () => {
-      const passwordInput = toggle.parentElement.querySelector("input")
-      const eyeOpen = toggle.querySelector(".eye-open")
-      const eyeClosed = toggle.querySelector(".eye-closed")
+  togglePasswordButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const input = button.parentElement.querySelector("input")
+      const icon = button.querySelector("i")
 
-      if (passwordInput.type === "password") {
-        passwordInput.type = "text"
-        eyeOpen.classList.add("hidden")
-        eyeClosed.classList.remove("hidden")
+      if (input.type === "password") {
+        input.type = "text"
+        icon.classList.remove("fa-eye")
+        icon.classList.add("fa-eye-slash")
       } else {
-        passwordInput.type = "password"
-        eyeOpen.classList.remove("hidden")
-        eyeClosed.classList.add("hidden")
+        input.type = "password"
+        icon.classList.remove("fa-eye-slash")
+        icon.classList.add("fa-eye")
       }
     })
   })
 
-  // Check URL params for mode on page load
-  const urlParams = new URLSearchParams(window.location.search)
-  const mode = urlParams.get("mode")
+  // Password strength meter
+  const registerPassword = document.getElementById("register-password")
+  const strengthSegments = document.querySelectorAll(".strength-segment")
+  const strengthText = document.querySelector(".strength-text")
 
-  if (mode === "team" && teamCodeSection) {
-    teamCodeSection.classList.remove("hidden")
-  }
+  registerPassword.addEventListener("input", () => {
+    const password = registerPassword.value
+    const strength = checkPasswordStrength(password)
 
-  // Form submission handling
-  if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault()
-      const email = document.getElementById("login-email").value
-      const password = document.getElementById("login-password").value
-
-      // In a real app, this would authenticate with Firebase
-      // For demo purposes, we'll just redirect to the appropriate page
-      if (mode === "admin") {
-        window.location.href = "admin/dashboard.html"
-      } else if (mode === "team") {
-        window.location.href = "team/dashboard.html"
-      } else {
-        window.location.href = "chat.html"
+    // Update strength meter
+    strengthSegments.forEach((segment, index) => {
+      segment.className = "strength-segment"
+      if (index < strength.score) {
+        segment.classList.add(strength.class)
       }
     })
-  }
 
-  if (signupForm) {
-    signupForm.addEventListener("submit", (e) => {
-      e.preventDefault()
-      const name = document.getElementById("signup-name").value
-      const email = document.getElementById("signup-email").value
-      const password = document.getElementById("signup-password").value
-      const confirmPassword = document.getElementById("signup-confirm-password").value
+    strengthText.textContent = strength.text
+  })
 
-      // Basic validation
-      if (password !== confirmPassword) {
-        alert("Passwords do not match")
-        return
-      }
+  // Forgot password link
+  const forgotPasswordLink = document.getElementById("forgot-password-link")
+  const backToLoginButton = document.getElementById("back-to-login")
 
-      // In a real app, this would create a new user in Firebase
-      // For demo purposes, we'll just redirect to a success page
-      window.location.href = "signup/success.html"
-    })
-  }
+  forgotPasswordLink.addEventListener("click", (e) => {
+    e.preventDefault()
+    forms.forEach((form) => form.classList.remove("active"))
+    forgotPasswordForm.classList.add("active")
+  })
+
+  backToLoginButton.addEventListener("click", () => {
+    forms.forEach((form) => form.classList.remove("active"))
+    loginForm.classList.add("active")
+  })
+
+  // Form submissions
+  loginForm.addEventListener("submit", handleLogin)
+  registerForm.addEventListener("submit", handleRegister)
+  forgotPasswordForm.addEventListener("submit", handleForgotPassword)
+
+  // Social login
+  const googleLoginButton = document.getElementById("google-login")
+  const microsoftLoginButton = document.getElementById("microsoft-login")
+
+  googleLoginButton.addEventListener("click", handleGoogleLogin)
+  microsoftLoginButton.addEventListener("click", handleMicrosoftLogin)
+
+  // Initialize the auth state
+  firebase.auth().onAuthStateChanged(handleAuthStateChanged)
 })
+
+// Firebase initialization
+function initializeFirebase() {
+  try {
+    // Firebase configuration should be loaded from firebase-config.js
+    firebase.initializeApp(firebaseConfig)
+  } catch (error) {
+    showToast("Error", "Failed to initialize Firebase. Please try again later.", "error")
+    console.error("Firebase initialization error:", error)
+  }
+}
+
+// Password strength checker
+function checkPasswordStrength(password) {
+  if (!password) {
+    return { score: 0, text: "Password strength", class: "" }
+  }
+
+  let score = 0
+
+  // Length check
+  if (password.length >= 8) score++
+  if (password.length >= 12) score++
+
+  // Complexity checks
+  if (/[A-Z]/.test(password)) score++
+  if (/[0-9]/.test(password)) score++
+  if (/[^A-Za-z0-9]/.test(password)) score++
+
+  // Cap at 4
+  score = Math.min(score, 4)
+
+  const strengthMap = {
+    0: { text: "Too weak", class: "weak" },
+    1: { text: "Weak", class: "weak" },
+    2: { text: "Medium", class: "medium" },
+    3: { text: "Strong", class: "strong" },
+    4: { text: "Very strong", class: "strong" },
+  }
+
+  return {
+    score,
+    text: strengthMap[score].text,
+    class: strengthMap[score].class,
+  }
+}
+
+// Form validation
+function validateEmail(email) {
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return re.test(String(email).toLowerCase())
+}
+
+function validatePassword(password) {
+  return password.length >= 8
+}
+
+function validateName(name) {
+  return name.trim().length >= 2
+}
+
+// Form handlers
+function handleLogin(e) {
+  e.preventDefault()
+
+  // Get form values
+  const email = document.getElementById("login-email").value
+  const password = document.getElementById("login-password").value
+  const rememberMe = document.getElementById("remember-me").checked
+
+  // Reset error messages
+  document.getElementById("login-email-error").textContent = ""
+  document.getElementById("login-password-error").textContent = ""
+
+  // Validate form
+  let isValid = true
+
+  if (!validateEmail(email)) {
+    document.getElementById("login-email-error").textContent = "Please enter a valid email address"
+    isValid = false
+  }
+
+  if (!password) {
+    document.getElementById("login-password-error").textContent = "Please enter your password"
+    isValid = false
+  }
+
+  if (!isValid) return
+
+  // Show loading state
+  const loginButton = document.getElementById("login-button")
+  loginButton.classList.add("loading")
+  loginButton.disabled = true
+
+  // Set persistence
+  const persistence = rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION
+
+  firebase
+    .auth()
+    .setPersistence(persistence)
+    .then(() => {
+      // Sign in with email and password
+      return firebase.auth().signInWithEmailAndPassword(email, password)
+    })
+    .then((userCredential) => {
+      // Get user data from Firestore
+      return firebase.firestore().collection("users").doc(userCredential.user.uid).get()
+    })
+    .then((doc) => {
+      if (doc.exists) {
+        const userData = doc.data()
+        // Store user data in localStorage
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            uid: doc.id,
+            email: userData.email,
+            name: userData.name,
+            role: userData.role,
+          }),
+        )
+
+        // Redirect based on role
+        redirectBasedOnRole(userData.role)
+      } else {
+        throw new Error("User data not found")
+      }
+    })
+    .catch((error) => {
+      loginButton.classList.remove("loading")
+      loginButton.disabled = false
+
+      console.error("Login error:", error)
+
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+        document.getElementById("login-password-error").textContent = "Invalid email or password"
+      } else if (error.code === "auth/too-many-requests") {
+        document.getElementById("login-password-error").textContent =
+          "Too many failed login attempts. Please try again later"
+      } else {
+        showToast("Error", error.message, "error")
+      }
+    })
+}
+
+function handleRegister(e) {
+  e.preventDefault()
+
+  // Get form values
+  const name = document.getElementById("register-name").value
+  const email = document.getElementById("register-email").value
+  const password = document.getElementById("register-password").value
+  const role = document.querySelector('input[name="role"]:checked').value
+  const termsAccepted = document.getElementById("terms-checkbox").checked
+
+  // Reset error messages
+  document.getElementById("register-name-error").textContent = ""
+  document.getElementById("register-email-error").textContent = ""
+  document.getElementById("register-password-error").textContent = ""
+  document.getElementById("terms-error").textContent = ""
+
+  // Validate form
+  let isValid = true
+
+  if (!validateName(name)) {
+    document.getElementById("register-name-error").textContent = "Please enter your full name"
+    isValid = false
+  }
+
+  if (!validateEmail(email)) {
+    document.getElementById("register-email-error").textContent = "Please enter a valid email address"
+    isValid = false
+  }
+
+  if (!validatePassword(password)) {
+    document.getElementById("register-password-error").textContent = "Password must be at least 8 characters long"
+    isValid = false
+  }
+
+  if (!termsAccepted) {
+    document.getElementById("terms-error").textContent = "You must accept the Terms of Service and Privacy Policy"
+    isValid = false
+  }
+
+  if (!isValid) return
+
+  // Show loading state
+  const registerButton = document.getElementById("register-button")
+  registerButton.classList.add("loading")
+  registerButton.disabled = true
+
+  // Create user with email and password
+  firebase
+    .auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      // Add user data to Firestore
+      return firebase.firestore().collection("users").doc(userCredential.user.uid).set({
+        name: name,
+        email: email,
+        role: role,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+    })
+    .then(() => {
+      // Show success message
+      showSuccessMessage(
+        "Account Created!",
+        "Your account has been created successfully. You can now log in.",
+        "Go to Login",
+      )
+
+      // Reset form
+      registerForm.reset()
+
+      // Switch to login tab after success
+      successButton.addEventListener(
+        "click",
+        () => {
+          document.querySelector('[data-tab="login"]').click()
+          hideSuccessMessage()
+        },
+        { once: true },
+      )
+    })
+    .catch((error) => {
+      registerButton.classList.remove("loading")
+      registerButton.disabled = false
+
+      console.error("Registration error:", error)
+
+      if (error.code === "auth/email-already-in-use") {
+        document.getElementById("register-email-error").textContent = "This email is already in use"
+      } else {
+        showToast("Error", error.message, "error")
+      }
+    })
+}
+
+function handleForgotPassword(e) {
+  e.preventDefault()
+
+  // Get form values
+  const email = document.getElementById("forgot-email").value
+
+  // Reset error messages
+  document.getElementById("forgot-email-error").textContent = ""
+
+  // Validate form
+  if (!validateEmail(email)) {
+    document.getElementById("forgot-email-error").textContent = "Please enter a valid email address"
+    return
+  }
+
+  // Show loading state
+  const resetButton = document.getElementById("reset-button")
+  resetButton.classList.add("loading")
+  resetButton.disabled = true
+
+  // Send password reset email
+  firebase
+    .auth()
+    .sendPasswordResetEmail(email)
+    .then(() => {
+      // Show success message
+      showSuccessMessage("Email Sent!", "Check your email for a link to reset your password.", "Back to Login")
+
+      // Reset form
+      forgotPasswordForm.reset()
+
+      // Switch to login form after success
+      successButton.addEventListener(
+        "click",
+        () => {
+          forms.forEach((form) => form.classList.remove("active"))
+          loginForm.classList.add("active")
+          hideSuccessMessage()
+        },
+        { once: true },
+      )
+    })
+    .catch((error) => {
+      resetButton.classList.remove("loading")
+      resetButton.disabled = false
+
+      console.error("Password reset error:", error)
+
+      if (error.code === "auth/user-not-found") {
+        document.getElementById("forgot-email-error").textContent = "No account found with this email"
+      } else {
+        showToast("Error", error.message, "error")
+      }
+    })
+}
+
+// Social login handlers
+function handleGoogleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  signInWithProvider(provider)
+}
+
+function handleMicrosoftLogin() {
+  const provider = new firebase.auth.OAuthProvider("microsoft.com")
+  signInWithProvider(provider)
+}
+
+function signInWithProvider(provider) {
+  firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      const user = result.user
+      const isNewUser = result.additionalUserInfo.isNewUser
+
+      if (isNewUser) {
+        // For new users, create a record in Firestore
+        return firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .set({
+            name: user.displayName || "",
+            email: user.email,
+            role: "employee", // Default role for social login
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          })
+      } else {
+        // For existing users, get their data
+        return firebase.firestore().collection("users").doc(user.uid).get()
+      }
+    })
+    .then((docOrVoid) => {
+      let userData
+
+      if (docOrVoid && docOrVoid.exists) {
+        // Existing user
+        userData = docOrVoid.data()
+      } else {
+        // New user (we just created the document)
+        userData = {
+          name: firebase.auth().currentUser.displayName || "",
+          email: firebase.auth().currentUser.email,
+          role: "employee",
+        }
+      }
+
+      // Store user data in localStorage
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          uid: firebase.auth().currentUser.uid,
+          email: userData.email,
+          name: userData.name,
+          role: userData.role,
+        }),
+      )
+
+      // Redirect based on role
+      redirectBasedOnRole(userData.role)
+    })
+    .catch((error) => {
+      console.error("Social login error:", error)
+      showToast("Error", error.message, "error")
+    })
+}
+
+// Auth state change handler
+function handleAuthStateChanged(user) {
+  if (user) {
+    // User is signed in
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const userData = doc.data()
+
+          // Store user data in localStorage
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              uid: user.uid,
+              email: userData.email,
+              name: userData.name,
+              role: userData.role,
+            }),
+          )
+
+          // Check if we're on the auth page and redirect if needed
+          if (window.location.pathname.includes("auth.html")) {
+            redirectBasedOnRole(userData.role)
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error getting user data:", error)
+      })
+  } else {
+    // User is signed out
+    localStorage.removeItem("user")
+  }
+}
+
+// Redirect based on user role
+function redirectBasedOnRole(role) {
+  switch (role) {
+    case "admin":
+      window.location.href = "admin/dashboard.html"
+      break
+    case "team":
+      window.location.href = "team/dashboard.html"
+      break
+    case "employee":
+      window.location.href = "employee/dashboard.html"
+      break
+    default:
+      window.location.href = "index.html"
+  }
+}
+
+// Success message helpers
+function showSuccessMessage(title, text, buttonText) {
+  successTitle.textContent = title
+  successText.textContent = text
+  successButton.textContent = buttonText
+
+  forms.forEach((form) => (form.style.display = "none"))
+  successMessage.style.display = "block"
+}
+
+function hideSuccessMessage() {
+  successMessage.style.display = "none"
+  forms.forEach((form) => {
+    if (form.classList.contains("active")) {
+      form.style.display = "block"
+    }
+  })
+}
+
+// Toast notification
+function showToast(title, message, type = "info") {
+  const toastContainer = document.getElementById("toast-container")
+
+  const toast = document.createElement("div")
+  toast.className = `toast ${type}`
+
+  let iconClass
+  switch (type) {
+    case "success":
+      iconClass = "fa-check-circle"
+      break
+    case "error":
+      iconClass = "fa-exclamation-circle"
+      break
+    case "warning":
+      iconClass = "fa-exclamation-triangle"
+      break
+    default:
+      iconClass = "fa-info-circle"
+  }
+
+  toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="fas ${iconClass}"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close">
+            <i class="fas fa-times"></i>
+        </button>
+    `
+
+  toastContainer.appendChild(toast)
+
+  // Close button functionality
+  const closeButton = toast.querySelector(".toast-close")
+  closeButton.addEventListener("click", () => {
+    toast.remove()
+  })
+
+  // Auto remove after 3 seconds
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.remove()
+    }
+  }, 3000)
+}
