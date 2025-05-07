@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protected Route</title>
+    <style>
+        /* Global styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        /* Utility classes */
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .bg-gradient-to-b {
+            background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+        }
+        
+        .from-purple-950 {
+            --tw-gradient-from: #581c87;
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(88, 28, 135, 0));
+        }
+        
+        .via-purple-900 {
+            --tw-gradient-stops: var(--tw-gradient-from), #4c1d95, var(--tw-gradient-to, rgba(76, 29, 149, 0));
+        }
+        
+        .to-indigo-950 {
+            --tw-gradient-to: #312e81;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .h-12 {
+            height: 3rem;
+        }
+        
+        .w-12 {
+            width: 3rem;
+        }
+        
+        .text-white {
+            color: white;
+        }
+        
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        
+        .text-xl {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .opacity-25 {
+            opacity: 0.25;
+        }
+        
+        .opacity-75 {
+            opacity: 0.75;
+        }
+        
+        /* Content container */
+        .content-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .controls h3 {
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .controls button {
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #a855f7;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+        
+        .controls button:hover {
+            background-color: #9333ea;
+        }
+        
+        .controls select {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            width: 100%;
+            border-radius: 0.25rem;
+            border: 1px solid #d1d5db;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading State -->
+    <div id="loading-state" class="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-950 via-purple-900 to-indigo-950">
+        <div class="text-center">
+            <svg
+                class="animate-spin h-12 w-12 mx-auto text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+            </svg>
+            <p class="mt-4 text-xl font-medium text-white">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Protected Content -->
+    <div id="protected-content" class="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-950 via-purple-900 to-indigo-950 hidden">
+        <div class="content-container">
+            <h1>Protected Content</h1>
+            <p>This content is only visible to authenticated users with the appropriate role.</p>
+            <div id="role-specific-content" class="mt-4">
+                <h2>Role-specific Content</h2>
+                <p>This section is only visible to users with the required role.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unauthorized Message -->
+    <div id="unauthorized-message" class="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-950 via-purple-900 to-indigo-950 hidden">
+        <div class="content-container">
+            <h1>Unauthorized</h1>
+            <p>You do not have permission to access this page.</p>
+            <p>Please log in with an account that has the required permissions.</p>
+            <button id="login-button" style="margin-top: 1rem; padding: 0.5rem 1rem; background-color: #a855f7; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
+                Go to Login
+            </button>
+        </div>
+    </div>
+
+    <!-- Unauthenticated Message -->
+    <div id="unauthenticated-message" class="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-950 via-purple-900 to-indigo-950 hidden">
+        <div class="content-container">
+            <h1>Authentication Required</h1>
+            <p>You need to be logged in to access this page.</p>
+            <button id="login-button-2" style="margin-top: 1rem; padding: 0.5rem 1rem; background-color: #a855f7; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
+                Go to Login
+            </button>
+        </div>
+    </div>
+
+    <!-- Simulation Controls -->
+    <div class="controls">
+        <h3>Simulation Controls</h3>
+        <select id="auth-status">
+            <option value="loading">Loading</option>
+            <option value="authenticated">Authenticated</option>
+            <option value="unauthenticated">Unauthenticated</option>
+        </select>
+        <select id="user-role">
+            <option value="user">User Role</option>
+            <option value="admin">Admin Role</option>
+            <option value="team">Team Role</option>
+        </select>
+        <select id="required-role">
+            <option value="none">No Required Role</option>
+            <option value="user">Require User Role</option>
+            <option value="admin">Require Admin Role</option>
+            <option value="team">Require Team Role</option>
+        </select>
+        <button id="apply-settings">Apply Settings</button>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loadingState = document.getElementById('loading-state');
+        const protectedContent = document.getElementById('protected-content');
+        const unauthorizedMessage = document.getElementById('unauthorized-message');
+        const unauthenticatedMessage = document.getElementById('unauthenticated-message');
+        const roleSpecificContent = document.getElementById('role-specific-content');
+        const loginButton = document.getElementById('login-button');
+        const loginButton2 = document.getElementById('login-button-2');
+        
+        // Simulation Controls
+        const authStatusSelect = document.getElementById('auth-status');
+        const userRoleSelect = document.getElementById('user-role');
+        const requiredRoleSelect = document.getElementById('required-role');
+        const applySettingsButton = document.getElementById('apply-settings');
+        
+        // Simulated Auth State
+        let authState = {
+            loading: true,
+            authenticated: false,
+            userRole: 'user',
+            requiredRole: 'none'
+        };
+        
+        // Check Authentication
+        function checkAuth() {
+            return authState.authenticated;
+        }
+        
+        // Check Role
+        function checkRole(requiredRole) {
+            if (requiredRole === 'none') return true;
+            return authState.userRole === requiredRole;
+        }
+        
+        // Update UI based on auth state
+        function updateUI() {
+            // Hide all states first
+            loadingState.classList.add('hidden');
+            protectedContent.classList.add('hidden');
+            unauthorizedMessage.classList.add('hidden');
+            unauthenticatedMessage.classList.add('hidden');
+            
+            // Show appropriate state
+            if (authState.loading) {
+                loadingState.classList.remove('hidden');
+                return;
+            }
+            
+            if (!checkAuth()) {
+                unauthenticatedMessage.classList.remove('hidden');
+                return;
+            }
+            
+            if (authState.requiredRole !== 'none' && !checkRole(authState.requiredRole)) {
+                unauthorizedMessage.classList.remove('hidden');
+                return;
+            }
+            
+            protectedContent.classList.remove('hidden');
+            
+            // Update role-specific content visibility
+            if (authState.requiredRole !== 'none') {
+                roleSpecificContent.style.display = 'block';
+            } else {
+                roleSpecificContent.style.display = 'none';
+            }
+        }
+        
+        // Apply settings from controls
+        function applySettings() {
+            authState.loading = authStatusSelect.value === 'loading';
+            authState.authenticated = authStatusSelect.value === 'authenticated';
+            authState.userRole = userRoleSelect.value;
+            authState.requiredRole = requiredRoleSelect.value;
+            
+            updateUI();
+        }
+        
+        // Simulate redirect to login
+        function redirectToLogin() {
+            alert('Redirecting to login page...');
+        }
+        
+        // Event Listeners
+        applySettingsButton.addEventListener('click', applySettings);
+        loginButton.addEventListener('click', redirectToLogin);
+        loginButton2.addEventListener('click', redirectToLogin);
+        
+        // Initial UI update
+        updateUI();
+        
+        // Simulate authentication check after a delay
+        setTimeout(() => {
+            authState.loading = false;
+            updateUI();
+        }, 2000);
+    </script>
+</body>
+</html>
