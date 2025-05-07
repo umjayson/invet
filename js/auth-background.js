@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
   const shapes = document.querySelector(".shapes")
 
-  // Create animated background shapes
+  // Create animated background shapes with purple colors
   const colors = [
-    "rgba(79, 70, 229, 0.2)", // Primary color
-    "rgba(16, 185, 129, 0.2)", // Secondary color
-    "rgba(59, 130, 246, 0.2)", // Info color
-    "rgba(245, 158, 11, 0.2)", // Warning color
+    "rgba(106, 13, 173, 0.2)", // Primary purple
+    "rgba(156, 39, 176, 0.2)", // Secondary purple
+    "rgba(123, 31, 162, 0.2)", // Deep purple
+    "rgba(186, 104, 200, 0.2)", // Light purple
   ]
 
   const shapeTypes = ["circle", "square", "triangle"]
