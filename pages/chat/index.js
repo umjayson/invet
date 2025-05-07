@@ -29,6 +29,11 @@ export default function ChatInterface() {
   const [teamData, setTeamData] = useState(null)
   const messagesEndRef = useRef(null)
 
+  // Add better error handling and loading states for chat
+  const [chatError, setChatError] = useState(null)
+  const [sendingMessage, setSendingMessage] = useState(false)
+  const [creatingChat, setCreatingChat] = useState(false)
+
   // Fetch user data and chats
   useEffect(() => {
     if (!currentUser) return
@@ -125,17 +130,21 @@ export default function ChatInterface() {
     setActiveChat(chat)
   }
 
+  // Update the handleSendMessage function with better error handling
   const handleSendMessage = async (e) => {
     e.preventDefault()
 
     if (!newMessage.trim() || !activeChat) return
+
+    setSendingMessage(true)
+    setChatError(null)
 
     try {
       const db = getFirestore()
       const messageData = {
         text: newMessage,
         senderId: currentUser.uid,
-        senderName: userData.name,
+        senderName: userData?.name || "User",
         timestamp: Timestamp.now(),
       }
 
@@ -145,21 +154,31 @@ export default function ChatInterface() {
       // Update chat's updatedAt timestamp
       await updateDoc(doc(db, "chats", activeChat.id), {
         updatedAt: Timestamp.now(),
+        lastMessage: newMessage.substring(0, 50) + (newMessage.length > 50 ? "..." : ""),
+        lastMessageTime: Timestamp.now(),
+        lastMessageSender: userData?.name || "User",
       })
 
       setNewMessage("")
     } catch (error) {
       console.error("Error sending message:", error)
+      setChatError("Failed to send message. Please try again.")
+    } finally {
+      setSendingMessage(false)
     }
   }
 
+  // Update the createNewChat function with better error handling
   const createNewChat = async () => {
+    setCreatingChat(true)
+    setChatError(null)
+
     try {
       const db = getFirestore()
 
       // Create a new chat document
       const chatData = {
-        title: `New Chat ${new Date().toLocaleString()}`,
+        title: `New Chat - ${new Date().toLocaleString()}`,
         type: "individual",
         participants: [currentUser.uid],
         createdAt: Timestamp.now(),
@@ -167,13 +186,22 @@ export default function ChatInterface() {
       }
 
       // If user is part of a team, add team info
-      if (userData.teamId) {
+      if (userData?.teamId) {
         chatData.teamId = userData.teamId
         chatData.teamName = userData.teamName
       }
 
       // Add the new chat to Firestore
       const newChatRef = await addDoc(collection(db, "chats"), chatData)
+
+      // Add a welcome message
+      await addDoc(collection(db, "chats", newChatRef.id, "messages"), {
+        text: "Welcome to your new chat! Start typing to send messages.",
+        senderId: "system",
+        senderName: "System",
+        timestamp: Timestamp.now(),
+        type: "notification",
+      })
 
       // Set the new chat as active
       setActiveChat({
@@ -182,6 +210,9 @@ export default function ChatInterface() {
       })
     } catch (error) {
       console.error("Error creating new chat:", error)
+      setChatError("Failed to create new chat. Please try again.")
+    } finally {
+      setCreatingChat(false)
     }
   }
 
@@ -268,21 +299,50 @@ export default function ChatInterface() {
               <button
                 onClick={createNewChat}
                 className="w-full bg-green-600 hover:bg-green-500 text-white rounded-md py-2 px-4 flex items-center justify-center gap-2 transition-colors"
+                disabled={creatingChat}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 5v14"></path>
-                  <path d="M5 12h14"></path>
-                </svg>
-                New Chat
+                {creatingChat ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 5v14"></path>
+                      <path d="M5 12h14"></path>
+                    </svg>
+                    New Chat
+                  </>
+                )}
               </button>
             </div>
 
@@ -426,6 +486,29 @@ export default function ChatInterface() {
                   </div>
                 </div>
 
+                {/* Add error message display in the chat interface */}
+                {chatError && (
+                  <div className="p-2 bg-red-500/20 text-white border border-red-500/30 m-4 rounded-md">
+                    <div className="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2 flex-shrink-0"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                      </svg>
+                      <span>{chatError}</span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Messages Area */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {messages.length > 0 ? (
@@ -486,20 +569,44 @@ export default function ChatInterface() {
                     <button
                       type="submit"
                       className="p-2 bg-green-600 hover:bg-green-500 text-white rounded-md transition-colors"
+                      disabled={sendingMessage}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="m22 2-7 20-4-9-9-4Z"></path>
-                        <path d="M22 2 11 13"></path>
-                      </svg>
+                      {sendingMessage ? (
+                        <svg
+                          className="animate-spin h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="m22 2-7 20-4-9-9-4Z"></path>
+                          <path d="M22 2 11 13"></path>
+                        </svg>
+                      )}
                     </button>
                   </form>
                 </div>
