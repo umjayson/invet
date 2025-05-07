@@ -47,6 +47,7 @@ body {
   color: white;
   line-height: 1.5;
   background-color: var(--color-purple-950);
+  overflow-x: hidden;
 }
 
 /* Utility Classes */
@@ -112,6 +113,10 @@ body {
   gap: 0.5rem;
 }
 
+.gap-6 {
+  gap: 1.5rem;
+}
+
 .gap-8 {
   gap: 2rem;
 }
@@ -136,24 +141,24 @@ body {
   font-size: 0.875rem;
 }
 
-.text-lg {
-  font-size: 1.125rem;
-}
-
 .text-base {
   font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
 }
 
 .text-xl {
   font-size: 1.25rem;
 }
 
-.text-4xl {
-  font-size: 2.25rem;
-}
-
 .text-3xl {
   font-size: 1.875rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
 }
 
 .text-white {
@@ -170,6 +175,10 @@ body {
 
 .bg-white\/10 {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bg-gradient-radial {
+  background-image: radial-gradient(var(--tw-gradient-stops));
 }
 
 .backdrop-blur-sm {
@@ -192,18 +201,31 @@ body {
   border-color: rgba(107, 33, 168, 0.3);
 }
 
-.px-6 {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-}
-
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
 }
 
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
 .p-5 {
   padding: 1.25rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .py-6 {
@@ -216,9 +238,9 @@ body {
   padding-bottom: 2rem;
 }
 
-.py-6 {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .py-12 {
@@ -226,9 +248,9 @@ body {
   padding-bottom: 3rem;
 }
 
-.py-10 {
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
+.py-20 {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .mb-4 {
@@ -239,20 +261,20 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.mb-12 {
-  margin-bottom: 3rem;
-}
-
 .mb-8 {
   margin-bottom: 2rem;
 }
 
-.mt-8 {
-  margin-top: 2rem;
+.mb-12 {
+  margin-bottom: 3rem;
 }
 
 .mt-6 {
   margin-top: 1.5rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .mx-auto {
@@ -327,6 +349,20 @@ body {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(147, 51, 234, 0));
 }
 
+.from-purple-900\/40 {
+  --tw-gradient-from: rgba(88, 28, 135, 0.4);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(88, 28, 135, 0));
+}
+
+.via-purple-950\/80 {
+  --tw-gradient-via: rgba(59, 7, 100, 0.8);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to, rgba(59, 7, 100, 0));
+}
+
+.to-black {
+  --tw-gradient-to: #000;
+}
+
 .to-indigo-300 {
   --tw-gradient-to: var(--color-indigo-300);
 }
@@ -350,6 +386,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .platform-card:hover {
@@ -368,6 +405,7 @@ body {
   border-radius: 0.75rem;
   background-color: var(--platform-color, var(--color-purple-600));
   color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 .platform-card-title {
@@ -402,9 +440,11 @@ body {
 }
 
 .platform-card-button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   font-weight: 500;
   text-align: center;
   color: white;
@@ -413,23 +453,66 @@ body {
   transition: all 0.2s;
   text-decoration: none;
   margin-top: auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .platform-card-button:hover {
   filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .platform-card-button-disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
   background-color: var(--color-purple-700);
 }
 
 .platform-card-button-disabled:hover {
   filter: none;
+  transform: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* Media Queries */
+@media (min-width: 640px) {
+  .sm\:px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .sm\:py-6 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .sm\:py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .sm\:py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .sm\:p-6 {
+    padding: 1.5rem;
+  }
+
+  .sm\:text-lg {
+    font-size: 1.125rem;
+  }
+
+  .sm\:text-4xl {
+    font-size: 2.25rem;
+  }
+
+  .sm\:gap-8 {
+    gap: 2rem;
+  }
+}
+
 @media (min-width: 768px) {
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -442,6 +525,18 @@ body {
   .md\:py-20 {
     padding-top: 5rem;
     padding-bottom: 5rem;
+  }
+
+  .md\:p-8 {
+    padding: 2rem;
+  }
+
+  .md\:mt-8 {
+    margin-top: 2rem;
+  }
+
+  .md\:mb-12 {
+    margin-bottom: 3rem;
   }
 
   .md\:flex-row {
@@ -459,13 +554,8 @@ body {
   }
 }
 
-/* Additional Media Queries for Better Responsiveness */
+/* Additional Mobile Optimizations */
 @media (max-width: 640px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
   .platform-card-icon {
     width: 3rem;
     height: 3rem;
@@ -484,38 +574,15 @@ body {
 
   .platform-card-features {
     margin-bottom: 1.5rem;
+    font-size: 0.875rem;
   }
 
   .platform-card-button {
-    padding: 0.625rem 1.25rem;
+    padding: 0.75rem 1.25rem;
   }
 
   .fixed.h-96.w-96 {
     height: 16rem;
     width: 16rem;
-  }
-}
-
-@media (min-width: 640px) {
-  .sm\:text-lg {
-    font-size: 1.125rem;
-  }
-
-  .sm\:text-4xl {
-    font-size: 2.25rem;
-  }
-
-  .sm\:p-6 {
-    padding: 1.5rem;
-  }
-
-  .sm\:gap-8 {
-    gap: 2rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .platform-card-features {
-    font-size: 0.875rem;
   }
 }
