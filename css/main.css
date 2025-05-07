@@ -140,12 +140,20 @@ body {
   font-size: 1.125rem;
 }
 
+.text-base {
+  font-size: 1rem;
+}
+
 .text-xl {
   font-size: 1.25rem;
 }
 
 .text-4xl {
   font-size: 2.25rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
 }
 
 .text-white {
@@ -189,6 +197,15 @@ body {
   padding-right: 1.5rem;
 }
 
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.p-5 {
+  padding: 1.25rem;
+}
+
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
@@ -199,9 +216,19 @@ body {
   padding-bottom: 2rem;
 }
 
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
 .py-12 {
   padding-top: 3rem;
   padding-bottom: 3rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 
 .mb-4 {
@@ -216,8 +243,16 @@ body {
   margin-bottom: 3rem;
 }
 
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
 .mt-8 {
   margin-top: 2rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
 }
 
 .mx-auto {
@@ -307,7 +342,6 @@ body {
 /* Platform Cards */
 .platform-card {
   position: relative;
-  padding: 2rem;
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
@@ -352,6 +386,7 @@ body {
   margin-bottom: 2rem;
   padding-left: 1.5rem;
   color: var(--color-purple-300);
+  font-size: 0.9375rem;
 }
 
 .platform-card-features li {
@@ -421,5 +456,66 @@ body {
 @media (min-width: 1024px) {
   .lg\:text-6xl {
     font-size: 3.75rem;
+  }
+}
+
+/* Additional Media Queries for Better Responsiveness */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .platform-card-icon {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .platform-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .platform-card-description {
+    font-size: 0.9375rem;
+    margin-bottom: 1rem;
+  }
+
+  .platform-card-features {
+    margin-bottom: 1.5rem;
+  }
+
+  .platform-card-button {
+    padding: 0.625rem 1.25rem;
+  }
+
+  .fixed.h-96.w-96 {
+    height: 16rem;
+    width: 16rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .sm\:text-lg {
+    font-size: 1.125rem;
+  }
+
+  .sm\:text-4xl {
+    font-size: 2.25rem;
+  }
+
+  .sm\:p-6 {
+    padding: 1.5rem;
+  }
+
+  .sm\:gap-8 {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .platform-card-features {
+    font-size: 0.875rem;
   }
 }
