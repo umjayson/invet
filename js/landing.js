@@ -1,75 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Mobile menu toggle
-  const mobileMenuToggle = document.getElementById("mobile-menu-toggle")
-  const mobileMenu = document.getElementById("mobile-menu")
-
-  if (mobileMenuToggle && mobileMenu) {
-    mobileMenuToggle.addEventListener("click", () => {
-      mobileMenu.classList.toggle("hidden")
-    })
-  }
-
-  // Close mobile menu when clicking on a link
-  const mobileMenuLinks = mobileMenu?.querySelectorAll("a")
-  mobileMenuLinks?.forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.add("hidden")
-    })
-  })
-
-  // Smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      e.preventDefault()
-
-      const targetId = this.getAttribute("href")
-      if (targetId === "#") return
-
-      const targetElement = document.querySelector(targetId)
-      if (targetElement) {
-        window.scrollTo({
-          top: targetElement.offsetTop - 80, // Adjust for header height
-          behavior: "smooth",
-        })
-      }
-    })
-  })
-
-  // Sticky header
-  const header = document.querySelector("header")
-  const headerHeight = header.offsetHeight
-
-  function handleScroll() {
-    if (window.scrollY > headerHeight) {
-      header.classList.add("sticky")
-    } else {
-      header.classList.remove("sticky")
-    }
-
-    // Back to top button visibility
-    const backToTopButton = document.getElementById("back-to-top")
-    if (backToTopButton) {
-      if (window.scrollY > 500) {
-        backToTopButton.classList.add("visible")
-      } else {
-        backToTopButton.classList.remove("visible")
-      }
-    }
-  }
-
-  window.addEventListener("scroll", handleScroll)
-
-  // Back to top functionality
-  const backToTopButton = document.getElementById("back-to-top")
-  if (backToTopButton) {
-    backToTopButton.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      })
-    })
-  }
-
   // Particles background
   const canvas = document.getElementById("particles-canvas")
   if (canvas) {
@@ -98,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
         this.speedY = (Math.random() - 0.5) * 0.3
         this.color = this.getRandomColor()
         this.alpha = Math.random() * 0.5 + 0.1
+        this.pulseSpeed = Math.random() * 0.01 + 0.005
+        this.pulseDirection = Math.random() > 0.5 ? 1 : -1
       }
 
       getRandomColor() {
@@ -116,6 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
       update() {
         this.x += this.speedX
         this.y += this.speedY
+
+        // Pulse size
+        this.size += this.pulseSpeed * this.pulseDirection
+        if (this.size > 3 || this.size < 0.5) {
+          this.pulseDirection *= -1
+        }
 
         // Wrap around edges
         if (this.x < 0) this.x = canvas.width
@@ -178,15 +115,80 @@ document.addEventListener("DOMContentLoaded", () => {
     animate()
   }
 
-  // Video player functionality
-  const videoThumbnail = document.querySelector(".aspect-video")
-  const playButton = videoThumbnail?.querySelector("button")
+  // Intersection Observer for scroll animations
+  const animatedElements = document.querySelectorAll(".animate-on-scroll")
 
-  if (playButton) {
-    playButton.addEventListener("click", () => {
-      // In a real implementation, this would create a video player
-      // For demo purposes, we'll just show an alert
-      alert("Video player would open here in a production environment")
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible")
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.1 },
+  )
+
+  animatedElements.forEach((element, index) => {
+    element.style.setProperty("--index", index)
+    observer.observe(element)
+  })
+
+  // Back to top button
+  const backToTopButton = document.getElementById("back-to-top")
+
+  if (backToTopButton) {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.add("visible")
+      } else {
+        backToTopButton.classList.remove("visible")
+      }
+    })
+
+    backToTopButton.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      })
     })
   }
+
+  // Set current year in footer
+  const yearElement = document.getElementById("current-year")
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear()
+  }
+
+  // Platform card hover effects
+  const platformCards = document.querySelectorAll(".platform-card")
+
+  platformCards.forEach((card) => {
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+
+      // Calculate rotation based on mouse position
+      const centerX = rect.width / 2
+      const centerY = rect.height / 2
+      const rotateX = (y - centerY) / 20
+      const rotateY = (centerX - x) / 20
+
+      // Apply the 3D effect
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`
+    })
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) translateZ(0)"
+      setTimeout(() => {
+        card.style.transition = "all 0.4s ease"
+      }, 100)
+    })
+
+    card.addEventListener("mouseenter", () => {
+      card.style.transition = "all 0.1s ease"
+    })
+  })
 })
