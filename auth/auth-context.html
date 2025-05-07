@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Auth Provider</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Your app content will go here -->
+    </div>
+
+    <script>
+        // Firebase configuration - replace with your own config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Auth state variables
+        let currentUser = null;
+        let userRole = null;
+        let loading = true;
+        let error = null;
+
+        // Auth state listener
+        function initAuthStateListener() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    // User is signed in
+                    currentUser = user;
+
+                    // Get user role from Firestore
+                    try {
+                        const userDoc = await db.collection("users").doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            userRole = userData.role;
+                        } else {
+                            console.error("No user data found");
+                            userRole = null;
+                        }
+                    } catch (err) {
+                        console.error("Error fetching user data:", err);
+                    }
+                } else {
+                    // User is signed out
+                    currentUser = null;
+                    userRole = null;
+                }
+                loading = false;
+                
+                // Notify any listeners that auth state has changed
+                const event = new CustomEvent('authStateChanged', { 
+                    detail: { currentUser, userRole, loading, error } 
+                });
+                document.dispatchEvent(event);
+            });
+        }
+
+        // Login function
+        async function login(email, password, rememberMe = false) {
+            error = null;
+            try {
+                // Set persistence based on remember me option
+                const persistence = rememberMe ? 
+                    firebase.auth.Auth.Persistence.LOCAL : 
+                    firebase.auth.Auth.Persistence.SESSION;
+
+                await auth.setPersistence(persistence);
+
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Get user role
+                const userDoc = await db.collection("users").doc(user.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    userRole = userData.role;
+
+                    // Redirect based on role
+                    if (userData.role === "admin") {
+                        window.location.href = "/admin/dashboard";
+                    } else if (userData.role === "team") {
+                        window.location.href = "/team/dashboard";
+                    } else if (userData.role === "employee") {
+                        window.location.href = "/chat";
+                    }
+                }
+
+                return user;
+            } catch (err) {
+                error = err.message;
+                throw err;
+            }
+        }
+
+        // Create admin account
+        async function createAdminAccount(email, password, name, adminPin) {
+            error = null;
+            try {
+                // Verify admin PIN
+                const configDoc = await db.collection("appConfig").doc("adminConfig").get();
+                if (!configDoc.exists || configDoc.data().adminPin !== adminPin) {
+                    throw new Error("Invalid admin PIN");
+                }
+
+                // Create user account
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Store user data in Firestore
+                await db.collection("users").doc(user.uid).set({
+                    uid: user.uid,
+                    email: email,
+                    name: name,
+                    role: "admin",
+                    createdAt: new Date()
+                });
+
+                // Store in admins collection as well
+                await db.collection("admins").doc(user.uid).set({
+                    uid: user.uid,
+                    email: email,
+                    name: name,
+                    createdAt: new Date()
+                });
+
+                userRole = "admin";
+                window.location.href = "/admin/dashboard";
+
+                return user;
+            } catch (err) {
+                error = err.message;
+                throw err;
+            }
+        }
+
+        // Create team account
+        async function createTeamAccount(email, password, teamName, teamDetails) {
+            error = null;
+            try {
+                // Create user account
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Generate unique team PIN - ensure it's 6 digits
+                const teamPin = Math.floor(100000 + Math.random() * 900000).toString();
+
+                // Verify the PIN is unique by checking against existing PINs
+                const teamsWithPin = await db.collection("teams")
+                    .where("teamPin", "==", teamPin)
+                    .get();
+
+                // If PIN already exists, generate a new one
+                if (!teamsWithPin.empty) {
+                    await auth.signOut(); // Sign out the created user
+                    throw new Error("PIN generation conflict. Please try again.");
+                }
+
+                // Store team data in Firestore
+                await db.collection("users").doc(user.uid).set({
+                    uid: user.uid,
+                    email: email,
+                    name: teamName,
+                    role: "team",
+                    teamPin: teamPin,
+                    teamDetails: teamDetails,
+                    createdAt: new Date()
+                });
+
+                // Create team document
+                const teamRef = db.collection("teams").doc(user.uid);
+                await teamRef.set({
+                    teamId: user.uid,
+                    teamName: teamName,
+                    ownerEmail: email,
+                    teamPin: teamPin,
+                    members: [],
+                    ...teamDetails,
+                    createdAt: new Date()
+                });
+
+                // Create team chat group
+                const chatRef = db.collection("chats").doc();
+                await chatRef.set({
+                    id: chatRef.id,
+                    type: "teamChat",
+                    teamId: user.uid,
+                    teamName: teamName,
+                    participants: [user.uid],
+                    title: `${teamName} Team Chat`,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    messages: []
+                });
+
+                // Update team with chat reference
+                await teamRef.update({ teamChatId: chatRef.id });
+
+                userRole = "team";
+                window.location.href = "/team/dashboard";
+
+                return { user, teamPin };
+            } catch (err) {
+                error = err.message;
+                throw err;
+            }
+        }
+
+        // Create employee account
+        async function createEmployeeAccount(email, password, name, teamPin) {
+            error = null;
+            try {
+                // Verify team PIN
+                const teamSnapshot = await db.collection("teams")
+                    .where("teamPin", "==", teamPin)
+                    .get();
+
+                if (teamSnapshot.empty) {
+                    throw new Error("Invalid team PIN. Please check with your team administrator.");
+                }
+
+                const teamDoc = teamSnapshot.docs[0];
+                const teamData = teamDoc.data();
+
+                // Create user account
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // Store employee data in Firestore
+                await db.collection("users").doc(user.uid).set({
+                    uid: user.uid,
+                    email: email,
+                    name: name,
+                    role: "employee",
+                    teamId: teamDoc.id,
+                    teamName: teamData.teamName,
+                    createdAt: new Date()
+                });
+
+                // Add employee to team members
+                const teamRef = db.collection("teams").doc(teamDoc.id);
+                const memberData = {
+                    uid: user.uid,
+                    name: name,
+                    email: email,
+                    joinedAt: new Date()
+                };
+
+                // Get current members array to ensure we don't duplicate
+                const currentTeamDoc = await teamRef.get();
+                const currentMembers = currentTeamDoc.exists ? currentTeamDoc.data().members || [] : [];
+
+                // Check if user is already a member
+                const isAlreadyMember = currentMembers.some((member) => member.uid === user.uid);
+
+                if (!isAlreadyMember) {
+                    await teamRef.update({
+                        members: [...currentMembers, memberData]
+                    });
+                }
+
+                // Add employee to team chat
+                if (teamData.teamChatId) {
+                    const chatRef = db.collection("chats").doc(teamData.teamChatId);
+                    const chatDoc = await chatRef.get();
+
+                    if (chatDoc.exists) {
+                        const chatData = chatDoc.data();
+                        const currentParticipants = chatData.participants || [];
+
+                        // Check if user is already a participant
+                        if (!currentParticipants.includes(user.uid)) {
+                            await chatRef.update({
+                                participants: [...currentParticipants, user.uid]
+                            });
+                        }
+
+                        // Add welcome message to the chat
+                        await db.collection("chats").doc(teamData.teamChatId).collection("messages").add({
+                            text: `${name} has joined the team chat!`,
+                            senderId: "system",
+                            senderName: "System",
+                            timestamp: new Date(),
+                            type: "notification"
+                        });
+                    }
+                }
+
+                userRole = "employee";
+                window.location.href = "/chat";
+
+                return user;
+            } catch (err) {
+                error = err.message;
+                throw err;
+            }
+        }
+
+        // Sign out function
+        async function logout() {
+            error = null;
+            try {
+                await auth.signOut();
+                window.location.href = "/auth/login";
+            } catch (err) {
+                error = err.message;
+                throw err;
+            }
+        }
+
+        // Check if user is authenticated and redirect if needed
+        function checkAuth() {
+            if (!loading && !currentUser) {
+                window.location.href = "/auth/login";
+                return false;
+            }
+            return true;
+        }
+
+        // Check if user has specific role
+        function checkRole(requiredRole) {
+            if (!loading && currentUser) {
+                if (userRole !== requiredRole) {
+                    // Redirect based on actual role
+                    if (userRole === "admin") {
+                        window.location.href = "/admin/dashboard";
+                    } else if (userRole === "team") {
+                        window.location.href = "/team/dashboard";
+                    } else if (userRole === "employee") {
+                        window.location.href = "/chat";
+                    } else {
+                        window.location.href = "/auth/login";
+                    }
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // Initialize auth state listener
+        initAuthStateListener();
+
+        // Export auth functions to global scope for use in other scripts
+        window.authService = {
+            login,
+            createAdminAccount,
+            createTeamAccount,
+            createEmployeeAccount,
+            logout,
+            checkAuth,
+            checkRole,
+            getCurrentUser: () => currentUser,
+            getUserRole: () => userRole,
+            isLoading: () => loading,
+            getError: () => error
+        };
+    </script>
+</body>
+</html>
