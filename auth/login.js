@@ -11,16 +11,53 @@ export default function Login() {
   const [error, setError] = useState("")
   const { login } = useAuth()
 
+  // Add password visibility toggle functionality
+  const [showPassword, setShowPassword] = useState(false)
+
+  // Add remember me functionality
+  const [rememberMe, setRememberMe] = useState(false)
+
+  // Add better validation
+  const validateForm = () => {
+    if (!email) {
+      setError("Email is required")
+      return false
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address")
+      return false
+    }
+
+    if (!password) {
+      setError("Password is required")
+      return false
+    }
+
+    return true
+  }
+
+  // Update the handleSubmit function to use the validation
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
+
+    if (!validateForm()) return
+
     setLoading(true)
 
     try {
-      await login(email, password)
+      // Pass remember me option to login function
+      await login(email, password, rememberMe)
       // Redirect is handled in the login function based on user role
     } catch (error) {
-      setError("Failed to sign in. Please check your credentials.")
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+        setError("Invalid email or password. Please try again.")
+      } else if (error.code === "auth/too-many-requests") {
+        setError("Too many failed login attempts. Please try again later or reset your password.")
+      } else {
+        setError("Failed to sign in. Please check your credentials.")
+      }
       console.error(error)
     }
 
@@ -130,7 +167,7 @@ export default function Login() {
                 </div>
                 <div className="relative">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     className="form-input pl-10"
                     placeholder="••••••••"
@@ -153,7 +190,55 @@ export default function Login() {
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                   </svg>
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300 hover:text-white"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    )}
+                  </button>
                 </div>
+              </div>
+
+              <div className="flex items-center mt-4">
+                <input
+                  type="checkbox"
+                  id="remember-me"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-purple-200">
+                  Remember me
+                </label>
               </div>
 
               <div className="form-group">
