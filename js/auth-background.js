@@ -1,108 +1,89 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("auth-background")
-  if (!canvas) return
+  const shapes = document.querySelector(".shapes")
 
-  const ctx = canvas.getContext("2d")
+  // Create animated background shapes
+  const colors = [
+    "rgba(79, 70, 229, 0.2)", // Primary color
+    "rgba(16, 185, 129, 0.2)", // Secondary color
+    "rgba(59, 130, 246, 0.2)", // Info color
+    "rgba(245, 158, 11, 0.2)", // Warning color
+  ]
 
-  // Set canvas size
-  function resizeCanvas() {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+  const shapeTypes = ["circle", "square", "triangle"]
+
+  // Create shapes
+  for (let i = 0; i < 15; i++) {
+    createRandomShape()
   }
 
-  resizeCanvas()
-  window.addEventListener("resize", resizeCanvas)
+  function createRandomShape() {
+    const shape = document.createElement("div")
+    const size = Math.random() * 100 + 50
+    const color = colors[Math.floor(Math.random() * colors.length)]
+    const shapeType = shapeTypes[Math.floor(Math.random() * shapeTypes.length)]
 
-  // Particle class
-  class Particle {
-    constructor() {
-      this.reset()
+    shape.style.position = "absolute"
+    shape.style.width = `${size}px`
+    shape.style.height = `${size}px`
+    shape.style.backgroundColor = shapeType === "circle" || shapeType === "square" ? color : "transparent"
+    shape.style.left = `${Math.random() * 100}%`
+    shape.style.top = `${Math.random() * 100}%`
+    shape.style.opacity = "0.7"
+    shape.style.borderRadius = shapeType === "circle" ? "50%" : "0"
+    shape.style.zIndex = "-1"
+
+    if (shapeType === "triangle") {
+      shape.style.width = "0"
+      shape.style.height = "0"
+      shape.style.borderLeft = `${size / 2}px solid transparent`
+      shape.style.borderRight = `${size / 2}px solid transparent`
+      shape.style.borderBottom = `${size}px solid ${color}`
     }
 
-    reset() {
-      this.x = Math.random() * canvas.width
-      this.y = Math.random() * canvas.height
-      this.size = Math.random() * 3 + 1
-      this.speedX = (Math.random() - 0.5) * 0.5
-      this.speedY = (Math.random() - 0.5) * 0.5
-      this.color = this.getRandomColor()
-      this.alpha = Math.random() * 0.5 + 0.1
-    }
+    // Animation
+    const duration = Math.random() * 20 + 10
+    const xMovement = Math.random() * 40 - 20
+    const yMovement = Math.random() * 40 - 20
+    const rotation = Math.random() * 360
 
-    getRandomColor() {
-      const colors = [
-        "rgba(147, 51, 234, alpha)", // purple-600
-        "rgba(168, 85, 247, alpha)", // purple-500
-        "rgba(192, 132, 252, alpha)", // purple-400
-        "rgba(79, 70, 229, alpha)", // indigo-600
-        "rgba(99, 102, 241, alpha)", // indigo-500
-        "rgba(129, 140, 248, alpha)", // indigo-400
-      ]
+    shape.style.animation = `float ${duration}s infinite ease-in-out`
+    shape.style.transform = `translate(0, 0) rotate(0deg)`
 
-      return colors[Math.floor(Math.random() * colors.length)].replace("alpha", this.alpha)
-    }
+    // Create keyframes for this specific shape
+    const keyframes = `
+            @keyframes float {
+                0% {
+                    transform: translate(0, 0) rotate(0deg);
+                }
+                50% {
+                    transform: translate(${xMovement}px, ${yMovement}px) rotate(${rotation}deg);
+                }
+                100% {
+                    transform: translate(0, 0) rotate(0deg);
+                }
+            }
+        `
 
-    update() {
-      this.x += this.speedX
-      this.y += this.speedY
+    // Add keyframes to document
+    const styleSheet = document.createElement("style")
+    styleSheet.textContent = keyframes
+    document.head.appendChild(styleSheet)
 
-      // Wrap around edges
-      if (this.x < 0) this.x = canvas.width
-      if (this.x > canvas.width) this.x = 0
-      if (this.y < 0) this.y = canvas.height
-      if (this.y > canvas.height) this.y = 0
-    }
-
-    draw() {
-      ctx.fillStyle = this.color
-      ctx.beginPath()
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2)
-      ctx.fill()
-    }
+    shapes.appendChild(shape)
   }
 
-  // Create particles
-  const particles = []
-  const particleCount = Math.min(100, Math.floor((canvas.width * canvas.height) / 10000))
+  // Add parallax effect
+  document.addEventListener("mousemove", (e) => {
+    const x = e.clientX / window.innerWidth
+    const y = e.clientY / window.innerHeight
 
-  for (let i = 0; i < particleCount; i++) {
-    particles.push(new Particle())
-  }
+    const shapeElements = shapes.querySelectorAll("div")
+    shapeElements.forEach((shape, index) => {
+      const depth = ((index % 5) + 1) / 10
+      const moveX = x * 50 * depth
+      const moveY = y * 50 * depth
 
-  // Create connections between particles
-  function drawConnections() {
-    for (let i = 0; i < particles.length; i++) {
-      for (let j = i + 1; j < particles.length; j++) {
-        const dx = particles[i].x - particles[j].x
-        const dy = particles[i].y - particles[j].y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < 150) {
-          ctx.beginPath()
-          ctx.strokeStyle = `rgba(147, 51, 234, ${0.1 * (1 - distance / 150)})`
-          ctx.lineWidth = 0.5
-          ctx.moveTo(particles[i].x, particles[i].y)
-          ctx.lineTo(particles[j].x, particles[j].y)
-          ctx.stroke()
-        }
-      }
-    }
-  }
-
-  // Animation loop
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    // Update and draw particles
-    for (let i = 0; i < particles.length; i++) {
-      particles[i].update()
-      particles[i].draw()
-    }
-
-    drawConnections()
-
-    requestAnimationFrame(animate)
-  }
-
-  animate()
+      shape.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${shape.style.transform.match(/rotate$$([^)]+)$$/)?.[1] || "0deg"})`
+    })
+  })
 })
