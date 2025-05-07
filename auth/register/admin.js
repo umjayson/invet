@@ -14,27 +14,104 @@ export default function AdminRegistration() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
 
+  // Add password strength meter and better validation
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    label: "",
+    color: "",
+  })
+
+  // Add password visibility toggles
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // Add password strength checker
+  const checkPasswordStrength = (password) => {
+    if (!password) {
+      return { score: 0, label: "", color: "" }
+    }
+
+    let score = 0
+
+    // Length check
+    if (password.length >= 8) score++
+    if (password.length >= 12) score++
+
+    // Complexity checks
+    if (/[A-Z]/.test(password)) score++
+    if (/[0-9]/.test(password)) score++
+    if (/[^A-Za-z0-9]/.test(password)) score++
+
+    // Cap at 4
+    score = Math.min(score, 4)
+
+    const strengthMap = {
+      0: { label: "Too weak", color: "bg-red-500" },
+      1: { label: "Weak", color: "bg-red-500" },
+      2: { label: "Medium", color: "bg-yellow-500" },
+      3: { label: "Strong", color: "bg-green-500" },
+      4: { label: "Very strong", color: "bg-green-500" },
+    }
+
+    return {
+      score,
+      label: strengthMap[score].label,
+      color: strengthMap[score].color,
+    }
+  }
+
+  // Update password input handler to check strength
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value
+    setPassword(newPassword)
+    setPasswordStrength(checkPasswordStrength(newPassword))
+  }
+
   const { createAdminAccount } = useAuth()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  // Add better form validation
+  const validateForm = () => {
+    // Reset error
     setError("")
 
-    // Validate form
-    if (password !== confirmPassword) {
-      setError("Passwords do not match")
-      return
+    // Validate name
+    if (!name.trim()) {
+      setError("Full name is required")
+      return false
     }
 
+    // Validate email
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setError("Please enter a valid email address")
+      return false
+    }
+
+    // Validate password
     if (password.length < 6) {
       setError("Password must be at least 6 characters")
-      return
+      return false
     }
 
+    // Validate password match
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
+      return false
+    }
+
+    // Validate admin PIN
     if (!adminPin) {
       setError("Admin PIN is required")
-      return
+      return false
     }
+
+    return true
+  }
+
+  // Update handleSubmit to use the validation
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!validateForm()) return
 
     setLoading(true)
 
@@ -42,7 +119,13 @@ export default function AdminRegistration() {
       await createAdminAccount(email, password, name, adminPin)
       setSuccess(true)
     } catch (error) {
-      setError(error.message || "Failed to create admin account")
+      if (error.message.includes("admin PIN")) {
+        setError("Invalid admin PIN. Please contact the system administrator.")
+      } else if (error.code === "auth/email-already-in-use") {
+        setError("This email is already in use. Please use a different email or try to log in.")
+      } else {
+        setError(error.message || "Failed to create admin account")
+      }
       console.error(error)
     }
 
@@ -201,12 +284,12 @@ export default function AdminRegistration() {
                   </label>
                   <div className="relative">
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       id="password"
                       className="form-input pl-10"
                       placeholder="••••••••"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={handlePasswordChange}
                       required
                     />
                     <svg
@@ -224,6 +307,56 @@ export default function AdminRegistration() {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300 hover:text-white"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                          <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                  <div className="mt-1">
+                    <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                      {passwordStrength.score > 0 && (
+                        <div
+                          className={`h-full ${passwordStrength.color}`}
+                          style={{ width: `${passwordStrength.score * 25}%` }}
+                        ></div>
+                      )}
+                    </div>
+                    {passwordStrength.label && (
+                      <p className="text-xs mt-1 text-purple-300">
+                        Password strength: <span className="font-medium">{passwordStrength.label}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -233,7 +366,7 @@ export default function AdminRegistration() {
                   </label>
                   <div className="relative">
                     <input
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       id="confirmPassword"
                       className="form-input pl-10"
                       placeholder="••••••••"
@@ -256,6 +389,41 @@ export default function AdminRegistration() {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300 hover:text-white"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                          <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      )}
+                    </button>
                   </div>
                 </div>
 
