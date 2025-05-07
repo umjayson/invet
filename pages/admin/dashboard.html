@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            950: '#2D1A45',
+                            900: '#3B2057',
+                            600: '#7E3AF2',
+                            400: '#A78BFA',
+                            300: '#C4B5FD',
+                            200: '#DDD6FE'
+                        },
+                        indigo: {
+                            950: '#1E1B4B',
+                            600: '#4F46E5',
+                            400: '#818CF8',
+                            300: '#A5B4FC'
+                        },
+                        green: {
+                            600: '#059669',
+                            400: '#34D399'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Additional custom styles */
+        .backdrop-blur-md {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-purple-950 via-purple-900 to-indigo-950">
+    <!-- Admin Header -->
+    <header class="bg-white/10 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="h-10 w-10 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-400 flex items-center justify-center">
+                        <span class="text-sm font-bold text-white">I</span>
+                    </div>
+                    <h1 class="text-xl font-bold text-white">Invet Admin</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-purple-200" id="user-email">admin@example.com</span>
+                    <button id="logout-btn" class="px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-md text-sm font-medium transition-colors">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Welcome Banner -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-2">Welcome to Admin Dashboard</h2>
+            <p class="text-purple-200">
+                Manage your teams, users, and monitor chat activities from this central dashboard.
+            </p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-white">Total Teams</h3>
+                    <div class="h-10 w-10 rounded-full bg-purple-600/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-white" id="teams-count">0</div>
+                <p class="text-purple-300 mt-2">Active teams</p>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-white">Total Users</h3>
+                    <div class="h-10 w-10 rounded-full bg-indigo-600/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-white" id="users-count">0</div>
+                <p class="text-purple-300 mt-2">Registered users</p>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-white">Active Chats</h3>
+                    <div class="h-10 w-10 rounded-full bg-green-600/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-white" id="chats-count">0</div>
+                <p class="text-purple-300 mt-2">Ongoing conversations</p>
+            </div>
+        </div>
+
+        <!-- Recent Teams -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-white">Recent Teams</h3>
+                <a href="/admin/teams" class="text-purple-300 hover:text-white text-sm flex items-center gap-1">
+                    View All
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <div id="teams-loading" class="text-center py-8">
+                <svg class="animate-spin h-8 w-8 mx-auto text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-2 text-purple-300">Loading teams...</p>
+            </div>
+
+            <div id="teams-empty" class="text-center py-8 hidden">
+                <p class="text-purple-300">No teams found</p>
+            </div>
+
+            <div id="teams-table" class="overflow-x-auto hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-white/10">
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Team Name</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Owner</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Members</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Created</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teams-table-body">
+                        <!-- Teams will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Chats -->
+        <div class="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold text-white">Recent Chats</h3>
+                <a href="/admin/chats" class="text-purple-300 hover:text-white text-sm flex items-center gap-1">
+                    View All
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <div id="chats-loading" class="text-center py-8">
+                <svg class="animate-spin h-8 w-8 mx-auto text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-2 text-purple-300">Loading chats...</p>
+            </div>
+
+            <div id="chats-empty" class="text-center py-8 hidden">
+                <p class="text-purple-300">No chats found</p>
+            </div>
+
+            <div id="chats-table" class="overflow-x-auto hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-white/10">
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Chat Title</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Type</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Participants</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Last Activity</th>
+                            <th class="text-left py-3 px-4 text-purple-200 font-medium">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chats-table-body">
+                        <!-- Chats will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Check authentication state
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in
+                document.getElementById('user-email').textContent = user.email;
+                
+                // Check if user is admin
+                db.collection('users').doc(user.uid).get()
+                    .then((doc) => {
+                        if (doc.exists && doc.data().role === 'admin') {
+                            // User is admin, fetch data
+                            fetchData();
+                        } else {
+                            // Not an admin, redirect to home
+                            window.location.href = '/';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error checking admin role:", error);
+                        window.location.href = '/';
+                    });
+            } else {
+                // User is signed out, redirect to login
+                window.location.href = '/login.html';
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            auth.signOut().then(() => {
+                // Sign-out successful, redirect to login
+                window.location.href = '/login.html';
+            }).catch((error) => {
+                // An error happened
+                console.error("Logout error:", error);
+            });
+        });
+
+        // Fetch data from Firestore
+        async function fetchData() {
+            try {
+                // Fetch teams
+                const teamsQuery = db.collection('teams').orderBy('createdAt', 'desc').limit(5);
+                const teamsSnapshot = await teamsQuery.get();
+                const teamsData = teamsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                // Fetch users
+                const usersQuery = db.collection('users').orderBy('createdAt', 'desc').limit(5);
+                const usersSnapshot = await usersQuery.get();
+                const usersData = usersSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                // Fetch chats
+                const chatsQuery = db.collection('chats').orderBy('updatedAt', 'desc').limit(5);
+                const chatsSnapshot = await chatsQuery.get();
+                const chatsData = chatsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Update UI with data
+                updateUI(teamsData, usersData, chatsData);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                // Show error state
+                document.getElementById('teams-loading').classList.add('hidden');
+                document.getElementById('chats-loading').classList.add('hidden');
+                document.getElementById('teams-empty').classList.remove('hidden');
+                document.getElementById('chats-empty').classList.remove('hidden');
+            }
+        }
+
+        // Update UI with fetched data
+        function updateUI(teams, users, chats) {
+            // Update counts
+            document.getElementById('teams-count').textContent = teams.length;
+            document.getElementById('users-count').textContent = users.length;
+            document.getElementById('chats-count').textContent = chats.length;
+            
+            // Update teams table
+            const teamsTableBody = document.getElementById('teams-table-body');
+            
+            if (teams.length > 0) {
+                let teamsHtml = '';
+                
+                teams.forEach(team => {
+                    const createdDate = team.createdAt ? new Date(team.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
+                    
+                    teamsHtml += `
+                        <tr class="border-b border-white/5 hover:bg-white/5">
+                            <td class="py-3 px-4 text-white">${team.teamName || 'Unnamed Team'}</td>
+                            <td class="py-3 px-4 text-purple-200">${team.ownerEmail || 'N/A'}</td>
+                            <td class="py-3 px-4 text-purple-200">${team.members?.length || 0}</td>
+                            <td class="py-3 px-4 text-purple-200">${createdDate}</td>
+                            <td class="py-3 px-4">
+                                <a href="/admin/teams/${team.id}" class="text-indigo-400 hover:text-indigo-300">
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                teamsTableBody.innerHTML = teamsHtml;
+                document.getElementById('teams-loading').classList.add('hidden');
+                document.getElementById('teams-table').classList.remove('hidden');
+            } else {
+                document.getElementById('teams-loading').classList.add('hidden');
+                document.getElementById('teams-empty').classList.remove('hidden');
+            }
+            
+            // Update chats table
+            const chatsTableBody = document.getElementById('chats-table-body');
+            
+            if (chats.length > 0) {
+                let chatsHtml = '';
+                
+                chats.forEach(chat => {
+                    const updatedDate = chat.updatedAt ? new Date(chat.updatedAt.seconds * 1000).toLocaleDateString() : 'N/A';
+                    
+                    chatsHtml += `
+                        <tr class="border-b border-white/5 hover:bg-white/5">
+                            <td class="py-3 px-4 text-white">${chat.title || 'Unnamed Chat'}</td>
+                            <td class="py-3 px-4 text-purple-200">${chat.type || 'N/A'}</td>
+                            <td class="py-3 px-4 text-purple-200">${chat.participants?.length || 0}</td>
+                            <td class="py-3 px-4 text-purple-200">${updatedDate}</td>
+                            <td class="py-3 px-4">
+                                <a href="/admin/chats/${chat.id}" class="text-indigo-400 hover:text-indigo-300">
+                                    View Chat
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                chatsTableBody.innerHTML = chatsHtml;
+                document.getElementById('chats-loading').classList.add('hidden');
+                document.getElementById('chats-table').classList.remove('hidden');
+            } else {
+                document.getElementById('chats-loading').classList.add('hidden');
+                document.getElementById('chats-empty').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
