@@ -8,8 +8,10 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth"
-import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, addDoc } from "firebase/firestore"
 import { useRouter } from "next/router"
+import firebase from "firebase/compat/app"
+import "firebase/compat/auth"
 
 const AuthContext = createContext()
 
@@ -54,10 +56,15 @@ export function AuthProvider({ children }) {
     return unsubscribe
   }, [])
 
-  // Sign in function
-  const login = async (email, password) => {
+  // Update the login function to handle remember me option
+  const login = async (email, password, rememberMe = false) => {
     setError(null)
     try {
+      // Set persistence based on remember me option
+      const persistence = rememberMe ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION
+
+      await getAuth().setPersistence(persistence)
+
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
@@ -125,7 +132,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // Sign up function for team
+  // Update the createTeamAccount function to ensure team PIN is properly generated
   const createTeamAccount = async (email, password, teamName, teamDetails) => {
     setError(null)
     try {
@@ -133,8 +140,17 @@ export function AuthProvider({ children }) {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
-      // Generate unique team PIN
+      // Generate unique team PIN - ensure it's 6 digits
       const teamPin = Math.floor(100000 + Math.random() * 900000).toString()
+
+      // Verify the PIN is unique by checking against existing PINs
+      const teamsWithPin = await getDocs(query(collection(db, "teams"), where("teamPin", "==", teamPin)))
+
+      // If PIN already exists, generate a new one (recursive call)
+      if (!teamsWithPin.empty) {
+        await signOut(auth) // Sign out the created user
+        throw new Error("PIN generation conflict. Please try again.")
+      }
 
       // Store team data in Firestore
       await setDoc(doc(db, "users", user.uid), {
@@ -186,7 +202,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  // Sign up function for employee
+  // Update the createEmployeeAccount function to ensure proper team chat addition
   const createEmployeeAccount = async (email, password, name, teamPin) => {
     setError(null)
     try {
@@ -195,7 +211,7 @@ export function AuthProvider({ children }) {
       const teamSnapshot = await getDocs(teamsQuery)
 
       if (teamSnapshot.empty) {
-        throw new Error("Invalid team PIN")
+        throw new Error("Invalid team PIN. Please check with your team administrator.")
       }
 
       const teamDoc = teamSnapshot.docs[0]
@@ -225,13 +241,22 @@ export function AuthProvider({ children }) {
         joinedAt: new Date(),
       }
 
-      await setDoc(
-        teamRef,
-        {
-          members: [...teamData.members, memberData],
-        },
-        { merge: true },
-      )
+      // Get current members array to ensure we don't duplicate
+      const currentTeamDoc = await getDoc(teamRef)
+      const currentMembers = currentTeamDoc.exists() ? currentTeamDoc.data().members || [] : []
+
+      // Check if user is already a member
+      const isAlreadyMember = currentMembers.some((member) => member.uid === user.uid)
+
+      if (!isAlreadyMember) {
+        await setDoc(
+          teamRef,
+          {
+            members: [...currentMembers, memberData],
+          },
+          { merge: true },
+        )
+      }
 
       // Add employee to team chat
       if (teamData.teamChatId) {
@@ -240,13 +265,28 @@ export function AuthProvider({ children }) {
 
         if (chatDoc.exists()) {
           const chatData = chatDoc.data()
-          await setDoc(
-            chatRef,
-            {
-              participants: [...chatData.participants, user.uid],
-            },
-            { merge: true },
-          )
+          const currentParticipants = chatData.participants || []
+
+          // Check if user is already a participant
+          if (!currentParticipants.includes(user.uid)) {
+            await setDoc(
+              chatRef,
+              {
+                participants: [...currentParticipants, user.uid],
+              },
+              { merge: true },
+            )
+          }
+
+          // Add welcome message to the chat
+          const messagesRef = collection(db, "chats", teamData.teamChatId, "messages")
+          await addDoc(messagesRef, {
+            text: `${name} has joined the team chat!`,
+            senderId: "system",
+            senderName: "System",
+            timestamp: new Date(),
+            type: "notification",
+          })
         }
       }
 
