@@ -1,16 +1,5 @@
 // Consolidated authentication functionality
 document.addEventListener("DOMContentLoaded", () => {
-  // Check if we're in development mode
-  const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-
-  // Show developer mode elements if in development
-  if (isDev) {
-    document.getElementById("dev-mode-section").classList.remove("hidden")
-    document.getElementById("dev-bypass-link").classList.remove("hidden")
-    document.getElementById("dev-team-hint").classList.remove("hidden")
-    document.getElementById("dev-admin-hint").classList.remove("hidden")
-  }
-
   // Get URL parameters
   const urlParams = new URLSearchParams(window.location.search)
   const mode = urlParams.get("mode")
@@ -373,34 +362,24 @@ document.addEventListener("DOMContentLoaded", () => {
     loginButton.innerHTML =
       '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Signing in...'
 
-    // Check for developer mode shortcuts
-    if (isDev) {
-      const teamCode = document.getElementById("team-code").value
-      const adminPin = document.getElementById("admin-pin").value
-
-      if (teamCode === "DEVTEAM" || adminPin === "1234") {
-        // Simulate successful login
-        setTimeout(() => {
-          // Redirect based on mode
-          if (mode === "admin" || adminPin === "1234") {
-            window.location.href = "admin/dashboard.html"
-          } else {
-            window.location.href = "chat.html"
-          }
-        }, 1500)
-        return
-      }
-    }
-
     // Simulate authentication (replace with actual authentication in a real app)
     setTimeout(() => {
       // For demo purposes, we'll just check if the email contains "admin" or "team"
       const email = loginEmail.value.toLowerCase()
+      let userRole = null
 
       if (email.includes("admin") && mode === "admin") {
-        window.location.href = "admin/dashboard.html"
+        userRole = "admin"
       } else if (email.includes("team") || mode === "team") {
-        window.location.href = "chat.html"
+        userRole = "team"
+      } else if (email.includes("employee")) {
+        userRole = "employee"
+      } else {
+        userRole = "user"
+      }
+
+      if (userRole) {
+        handleSuccessfulLogin(userRole)
       } else {
         // Show error
         loginError.classList.remove("hidden")
@@ -489,38 +468,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Simulate account creation (replace with actual account creation in a real app)
     setTimeout(() => {
-      if (signupType === "create-team") {
-        // Redirect to success page with team code
-        const teamCode = document.getElementById("create-team-code").value
-        const teamName = document.getElementById("team-name").value
-        window.location.href = `signup-success.html?teamCode=${teamCode}&teamName=${encodeURIComponent(teamName)}`
-      } else {
-        // Redirect to chat page
-        window.location.href = "chat.html"
+      if (signupType === "admin") {
+        window.location.href = "admin/dashboard.html"
+      } else if (signupType === "create-team") {
+        // Redirect to team dashboard
+        window.location.href = "team/dashboard.html"
+      } else if (signupType === "join-team") {
+        // Redirect to team chat
+        window.location.href = "team/dashboard.html"
       }
     }, 2000)
   })
 
-  // Developer mode activation
-  const activateDevMode = document.getElementById("activate-dev-mode")
-  const devDestination = document.getElementById("dev-destination")
+  // Handle successful login
+  function handleSuccessfulLogin(userType) {
+    // Store auth info in localStorage
+    localStorage.setItem("authToken", "sample-auth-token")
+    localStorage.setItem("userRole", userType)
+    localStorage.setItem("userEmail", document.getElementById("login-email").value)
 
-  activateDevMode.addEventListener("click", () => {
-    const destination = devDestination.value || "admin/dashboard.html"
-
-    // Show loading state
-    activateDevMode.disabled = true
-    activateDevMode.innerHTML =
-      '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Activating...'
-
-    // Simulate activation
-    setTimeout(() => {
-      // Store dev mode in session storage
-      sessionStorage.setItem("devMode", "active")
-      sessionStorage.setItem("devRole", destination.includes("admin") ? "admin" : "team")
-
-      // Redirect to destination
-      window.location.href = destination
-    }, 1500)
-  })
+    // Redirect based on user type
+    if (userType === "admin") {
+      window.location.href = "admin/dashboard.html"
+    } else if (userType === "team") {
+      window.location.href = "team/dashboard.html"
+    } else if (userType === "employee") {
+      window.location.href = "pages/chat/index.html"
+    } else {
+      window.location.href = "pages/chat/index.html"
+    }
+  }
 })
