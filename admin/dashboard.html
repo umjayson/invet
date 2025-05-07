@@ -13,7 +13,7 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="../assets/logo.svg" alt="InvetChat Logo" class="sidebar-logo">
+                <img src="../assets/logo.png" alt="InvetChat Logo" class="sidebar-logo">
                 <h1 class="sidebar-title">InvetChat</h1>
                 <button class="sidebar-toggle" id="sidebar-toggle">
                     <i class="fas fa-bars"></i>
@@ -246,5 +246,116 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="../js/firebase-config.js"></script>
     <script src="../js/admin/dashboard.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Check if user is logged in
+        const userData = localStorage.getItem("user");
+        if (!userData) {
+            // Redirect to login page
+            window.location.href = "../auth.html";
+            return;
+        }
+        
+        // Parse user data
+        const user = JSON.parse(userData);
+        
+        // Check if user has admin role
+        if (user.role !== "admin") {
+            // Redirect based on role
+            switch (user.role) {
+                case "team":
+                    window.location.href = "../team.html";
+                    break;
+                case "employee":
+                    window.location.href = "../employee/dashboard.html";
+                    break;
+                default:
+                    window.location.href = "../auth.html";
+            }
+            return;
+        }
+        
+        // Update UI with user data
+        const userNameElement = document.getElementById("user-name");
+        const welcomeNameElement = document.getElementById("welcome-name");
+        
+        if (userNameElement) {
+            userNameElement.textContent = user.name;
+        }
+        
+        if (welcomeNameElement) {
+            welcomeNameElement.textContent = user.name.split(" ")[0];
+        }
+        
+        // Sidebar toggle functionality
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+        const sidebar = document.querySelector(".sidebar");
+        const mainContent = document.querySelector(".main-content");
+        
+        if (sidebarToggle && sidebar && mainContent) {
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                mainContent.classList.toggle("expanded");
+            });
+        }
+        
+        // Logout functionality
+        const logoutButton = document.getElementById("logout-button");
+        
+        if (logoutButton) {
+            logoutButton.addEventListener("click", () => {
+                // Clear user data from localStorage
+                localStorage.removeItem("user");
+                
+                // Redirect to login page
+                window.location.href = "../auth.html";
+            });
+        }
+        
+        // For demo purposes, populate dashboard with mock data
+        populateMockData();
+    });
+
+    function populateMockData() {
+        // Mock data for charts and statistics
+        const mockData = {
+            totalUsers: 125,
+            activeUsers: 87,
+            newUsers: 12,
+            activeChats: 28,
+            completedChats: 45,
+            avgResponseTime: "2m 30s",
+            customerSatisfaction: "4.8/5"
+        };
+        
+        // Update statistics
+        const totalUsersElement = document.getElementById("total-users");
+        const activeUsersElement = document.getElementById("active-users");
+        const newUsersElement = document.getElementById("new-users");
+        
+        if (totalUsersElement) totalUsersElement.textContent = mockData.totalUsers;
+        if (activeUsersElement) activeUsersElement.textContent = mockData.activeUsers;
+        if (newUsersElement) newUsersElement.textContent = mockData.newUsers;
+        
+        // Create simple chart for activity
+        const chartContainer = document.querySelector(".chart-container");
+        if (chartContainer) {
+            // For demo purposes, we'll create a simple bar chart
+            const chartBars = document.createElement("div");
+            chartBars.className = "chart-bars";
+            
+            // Create 7 bars for the last 7 days
+            for (let i = 0; i < 7; i++) {
+                const height = Math.floor(Math.random() * 70) + 30; // Random height between 30% and 100%
+                const bar = document.createElement("div");
+                bar.className = "chart-bar";
+                bar.style.height = `${height}%`;
+                chartBars.appendChild(bar);
+            }
+            
+            chartContainer.appendChild(chartBars);
+        }
+    }
+</script>
 </body>
 </html>
