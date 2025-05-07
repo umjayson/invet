@@ -1,127 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invet - Team Management Platform</title>
-  <meta name="description" content="Choose your preferred Invet platform interface">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
-  <meta name="theme-color" content="#3b0764">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvetChat - Inventory Management Chat System</title>
+    <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="font-inter bg-gradient-to-b from-purple-950 via-purple-900 to-indigo-950">
-  <!-- Background Elements -->
-  <div class="fixed inset-0 -z-10 bg-gradient-radial from-purple-900/40 via-purple-950/80 to-black"></div>
-  <div class="fixed -left-20 top-1/4 -z-10 h-96 w-96 rounded-full bg-purple-600/20 blur-3xl"></div>
-  <div class="fixed -right-20 top-3/4 -z-10 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl"></div>
-
-  <!-- Header -->
-  <header class="relative z-10 px-4 sm:px-6 py-6">
-    <div class="container mx-auto">
-      <div class="flex items-center">
-        <div class="logo-container">
-          <div class="logo-wrapper">
-            <div class="logo-inner">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="logo-icon" width="28" height="28">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/logo.svg" alt="InvetChat Logo">
+                <h1>InvetChat</h1>
             </div>
-          </div>
-          <span class="logo-text">Invet</span>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="auth.html" class="btn btn-outline">Login</a>
+                <a href="auth.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Main Content -->
-  <main class="relative z-10">
-    <!-- Hero Section -->
-    <section class="container mx-auto px-4 sm:px-6 py-10 sm:py-12 md:py-20">
-      <div class="text-center">
-        <h1 class="mb-6 text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
-          Choose Your 
-          <span class="bg-gradient-to-r from-purple-400 to-indigo-300 bg-clip-text text-transparent">
-            Invet
-          </span> 
-          Experience
-        </h1>
-        <p class="mx-auto mb-8 md:mb-12 max-w-2xl text-base sm:text-lg text-purple-100">
-          Select your preferred interface to get started with Invet's powerful order management platform.
-        </p>
-      </div>
-
-      <div class="max-w-5xl mx-auto mt-8 md:mt-12 grid gap-8 md:grid-cols-2 px-4">
-    <!-- Chat Platform Card -->
-    <div class="platform-card-enhanced">
-      <div class="platform-card-content">
-        <div class="platform-card-icon-enhanced" style="background-color: var(--color-green);">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Streamline Your Inventory Management with AI-Powered Chat</h1>
+                <p>InvetChat combines inventory management with intelligent chat to help you track, manage, and optimize your inventory in real-time.</p>
+                <div class="hero-buttons">
+                    <a href="auth.html" class="btn btn-primary">Get Started</a>
+                    <a href="#demo" class="btn btn-outline">Watch Demo</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="assets/hero-image.svg" alt="InvetChat Dashboard">
+            </div>
         </div>
-        <h3 class="platform-card-title-enhanced">Invet Chat</h3>
-        <p class="platform-card-description-enhanced">Manage orders through our intuitive chat interface. Perfect for team collaboration and real-time order updates.</p>
-        <ul class="platform-card-features-enhanced">
-          <li>Real-time order notifications</li>
-          <li>Team messaging & collaboration</li>
-          <li>Customer communication</li>
-          <li>Mobile-friendly interface</li>
-        </ul>
-      </div>
-      <a href="auth.html" class="platform-card-button-enhanced" style="background-color: var(--color-green);">
-        Use Chat Interface
-      </a>
-    </div>
-
-    <!-- Dashboard Platform Card -->
-    <div class="platform-card-enhanced">
-      <div class="platform-card-content">
-        <div class="platform-card-icon-enhanced" style="background-color: var(--color-blue);">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
-        </div>
-        <h3 class="platform-card-title-enhanced">Invet Site</h3>
-        <p class="platform-card-description-enhanced">Our full-featured dashboard with comprehensive order management tools and detailed analytics.</p>
-        <ul class="platform-card-features-enhanced">
-          <li>Advanced order tracking</li>
-          <li>Detailed analytics & reports</li>
-          <li>Inventory management</li>
-          <li>Customer database</li>
-        </ul>
-      </div>
-      <div class="platform-card-button-enhanced platform-card-button-disabled-enhanced">
-        <div class="flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          Coming Soon
-        </div>
-      </div>
-    </div>
-  </div>
     </section>
-  </main>
 
-  <!-- Footer -->
-  <footer class="relative z-10 border-t border-purple-800/30 bg-purple-950/50 backdrop-blur-sm">
-    <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="flex items-center gap-2 mb-4 md:mb-0">
-          <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-purple-600 to-indigo-400 flex items-center justify-center">
-            <span class="text-xs font-bold text-white">I</span>
-          </div>
-          <span class="text-lg font-bold text-white">Invet</span>
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Key Features</h2>
+                <p>Everything you need to manage your inventory efficiently</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>AI-Powered Chat</h3>
+                    <p>Interact with your inventory system using natural language. Ask questions, get insights, and make updates through simple chat.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Real-time Analytics</h3>
+                    <p>Get instant insights into your inventory performance with real-time analytics and customizable dashboards.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Smart Alerts</h3>
+                    <p>Receive proactive notifications about low stock, expiring items, and other critical inventory events.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Team Collaboration</h3>
+                    <p>Work together with your team in real-time with shared access, role-based permissions, and activity tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Access</h3>
+                    <p>Manage your inventory on the go with our responsive mobile interface and dedicated mobile app.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3>Easy Integration</h3>
+                    <p>Connect with your existing tools and systems through our extensive API and pre-built integrations.</p>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <p class="text-sm text-purple-300">
-          © <span id="current-year"></span> Invet. All rights reserved.
-        </p>
-      </div>
-    </div>
-  </footer>
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Simple, intuitive, and powerful inventory management</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Connect Your Inventory</h3>
+                        <p>Import your existing inventory data or start fresh with our easy-to-use setup wizard.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Chat with InvetChat AI</h3>
+                        <p>Ask questions, update inventory, and get insights using natural language commands.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Collaborate with Your Team</h3>
+                        <p>Invite team members, assign roles, and work together in real-time.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Monitor and Optimize</h3>
+                        <p>Track performance, receive alerts, and optimize your inventory based on AI recommendations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Scripts -->
-  <script>
-    // Set current year in footer
-    document.getElementById("current-year").textContent = new Date().getFullYear();
-  </script>
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Customers Say</h2>
+                <p>Trusted by businesses of all sizes</p>
+            </div>
+            <div class="testimonial-slider">
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <p>"InvetChat has revolutionized how we manage our warehouse inventory. The AI chat interface makes it incredibly easy to check stock levels and place orders."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="assets/testimonial-1.jpg" alt="Sarah Johnson">
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Inventory Manager, TechSupply Co.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <p>"We've reduced stockouts by 75% and improved order fulfillment times by 40% since implementing InvetChat. The ROI has been incredible."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="assets/testimonial-2.jpg" alt="Michael Chen">
+                        <div class="author-info">
+                            <h4>Michael Chen</h4>
+                            <p>Operations Director, Global Retail Inc.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-content">
+                        <p>"The team collaboration features have been a game-changer for our multi-location business. Everyone stays in sync, and the AI helps prevent mistakes."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="assets/testimonial-3.jpg" alt="Jessica Martinez">
+                        <div class="author-info">
+                            <h4>Jessica Martinez</h4>
+                            <p>CEO, Martinez Distribution</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple, Transparent Pricing</h2>
+                <p>Choose the plan that's right for your business</p>
+            </div>
+            <div class="pricing-toggle">
+                <span>Monthly</span>
+                <label class="switch">
+                    <input type="checkbox" id="pricing-toggle">
+                    <span class="slider round"></span>
+                </label>
+                <span>Annually <span class="save-badge">Save 20%</span></span>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Starter</h3>
+                        <div class="pricing-price">
+                            <span class="currency">$</span>
+                            <span class="amount monthly">29</span>
+                            <span class="amount annually">23</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p>Perfect for small businesses</p>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Up to 1,000 inventory items</li>
+                            <li><i class="fas fa-check"></i> 3 team members</li>
+                            <li><i class="fas fa-check"></i> Basic AI chat capabilities</li>
+                            <li><i class="fas fa-check"></i> Standard reports</li>
+                            <li><i class="fas fa-check"></i> Email support</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-action">
+                        <a href="auth.html" class="btn btn-outline">Get Started</a>
+                    </div>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Professional</h3>
+                        <div class="pricing-price">
+                            <span class="currency">$</span>
+                            <span class="amount monthly">79</span>
+                            <span class="amount annually">63</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p>Ideal for growing businesses</p>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Up to 10,000 inventory items</li>
+                            <li><i class="fas fa-check"></i> 10 team members</li>
+                            <li><i class="fas fa-check"></i> Advanced AI chat capabilities</li>
+                            <li><i class="fas fa-check"></i> Custom reports</li>
+                            <li><i class="fas fa-check"></i> Priority support</li>
+                            <li><i class="fas fa-check"></i> API access</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-action">
+                        <a href="auth.html" class="btn btn-primary">Get Started</a>
+                    </div>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Enterprise</h3>
+                        <div class="pricing-price">
+                            <span class="currency">$</span>
+                            <span class="amount monthly">199</span>
+                            <span class="amount annually">159</span>
+                            <span class="period">/month</span>
+                        </div>
+                        <p>For large-scale operations</p>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="fas fa-check"></i> Unlimited inventory items</li>
+                            <li><i class="fas fa-check"></i> Unlimited team members</li>
+                            <li><i class="fas fa-check"></i> Premium AI capabilities</li>
+                            <li><i class="fas fa-check"></i> Advanced analytics</li>
+                            <li><i class="fas fa-check"></i> 24/7 dedicated support</li>
+                            <li><i class="fas fa-check"></i> Custom integrations</li>
+                            <li><i class="fas fa-check"></i> Dedicated account manager</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-action">
+                        <a href="auth.html" class="btn btn-outline">Contact Sales</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Transform Your Inventory Management?</h2>
+                <p>Join thousands of businesses that use InvetChat to streamline their operations.</p>
+                <a href="auth.html" class="btn btn-primary">Get Started for Free</a>
+                <p class="cta-note">No credit card required. 14-day free trial.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-company">
+                    <div class="logo">
+                        <img src="assets/logo.svg" alt="InvetChat Logo">
+                        <h2>InvetChat</h2>
+                    </div>
+                    <p>AI-powered inventory management made simple.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Product</h3>
+                        <ul>
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Pricing</a></li>
+                            <li><a href="#">Integrations</a></li>
+                            <li><a href="#">Changelog</a></li>
+                            <li><a href="#">Roadmap</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API Reference</a></li>
+                            <li><a href="#">Community</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Company</h3>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Partners</a></li>
+                            <li><a href="#">Legal</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 InvetChat. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/landing.js"></script>
 </body>
 </html>
