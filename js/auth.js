@@ -1,11 +1,17 @@
 // Initialize Firebase (ensure firebase and firebaseConfig are globally available)
-let firebase
-let firebaseConfig
-
-// Wait for the DOM to be fully loaded
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize Firebase
-  initializeFirebase()
+  try {
+    if (typeof firebase !== "undefined" && typeof firebaseConfig !== "undefined") {
+      firebase.initializeApp(firebaseConfig)
+    } else {
+      showToast("Error", "Firebase initialization failed. Please try again later.", "error")
+      console.error("Firebase or firebaseConfig is not defined")
+    }
+  } catch (error) {
+    showToast("Error", "Firebase initialization failed. Please try again later.", "error")
+    console.error("Firebase initialization error:", error)
+  }
 
   // DOM Elements
   const loginForm = document.getElementById("login-form")
@@ -99,27 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
   registerForm.addEventListener("submit", handleRegister)
   forgotPasswordForm.addEventListener("submit", handleForgotPassword)
 
-  // Social login
-  const googleLoginButton = document.getElementById("google-login")
-  const microsoftLoginButton = document.getElementById("microsoft-login")
-
-  googleLoginButton.addEventListener("click", handleGoogleLogin)
-  microsoftLoginButton.addEventListener("click", handleMicrosoftLogin)
-
   // Initialize the auth state
   firebase.auth().onAuthStateChanged(handleAuthStateChanged)
 })
-
-// Firebase initialization
-function initializeFirebase() {
-  try {
-    // Firebase configuration should be loaded from firebase-config.js
-    firebase.initializeApp(firebaseConfig)
-  } catch (error) {
-    showToast("Error", "Failed to initialize Firebase. Please try again later.", "error")
-    console.error("Firebase initialization error:", error)
-  }
-}
 
 // Password strength checker
 function checkPasswordStrength(password) {
@@ -405,77 +393,6 @@ function handleForgotPassword(e) {
     })
 }
 
-// Social login handlers
-function handleGoogleLogin() {
-  const provider = new firebase.auth.GoogleAuthProvider()
-  signInWithProvider(provider)
-}
-
-function handleMicrosoftLogin() {
-  const provider = new firebase.auth.OAuthProvider("microsoft.com")
-  signInWithProvider(provider)
-}
-
-function signInWithProvider(provider) {
-  firebase
-    .auth()
-    .signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user
-      const isNewUser = result.additionalUserInfo.isNewUser
-
-      if (isNewUser) {
-        // For new users, create a record in Firestore
-        return firebase
-          .firestore()
-          .collection("users")
-          .doc(user.uid)
-          .set({
-            name: user.displayName || "",
-            email: user.email,
-            role: "employee", // Default role for social login
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          })
-      } else {
-        // For existing users, get their data
-        return firebase.firestore().collection("users").doc(user.uid).get()
-      }
-    })
-    .then((docOrVoid) => {
-      let userData
-
-      if (docOrVoid && docOrVoid.exists) {
-        // Existing user
-        userData = docOrVoid.data()
-      } else {
-        // New user (we just created the document)
-        userData = {
-          name: firebase.auth().currentUser.displayName || "",
-          email: firebase.auth().currentUser.email,
-          role: "employee",
-        }
-      }
-
-      // Store user data in localStorage
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          uid: firebase.auth().currentUser.uid,
-          email: userData.email,
-          name: userData.name,
-          role: userData.role,
-        }),
-      )
-
-      // Redirect based on role
-      redirectBasedOnRole(userData.role)
-    })
-    .catch((error) => {
-      console.error("Social login error:", error)
-      showToast("Error", error.message, "error")
-    })
-}
-
 // Auth state change handler
 function handleAuthStateChanged(user) {
   if (user) {
@@ -518,9 +435,6 @@ function handleAuthStateChanged(user) {
 // Redirect based on user role
 function redirectBasedOnRole(role) {
   switch (role) {
-    case "admin":
-      window.location.href = "admin/dashboard.html"
-      break
     case "team":
       window.location.href = "team/dashboard.html"
       break
@@ -534,6 +448,12 @@ function redirectBasedOnRole(role) {
 
 // Success message helpers
 function showSuccessMessage(title, text, buttonText) {
+  const successTitle = document.getElementById("success-title")
+  const successText = document.getElementById("success-text")
+  const successButton = document.getElementById("success-button")
+  const successMessage = document.getElementById("success-message")
+  const forms = document.querySelectorAll(".auth-form")
+
   successTitle.textContent = title
   successText.textContent = text
   successButton.textContent = buttonText
@@ -543,6 +463,9 @@ function showSuccessMessage(title, text, buttonText) {
 }
 
 function hideSuccessMessage() {
+  const successMessage = document.getElementById("success-message")
+  const forms = document.querySelectorAll(".auth-form")
+
   successMessage.style.display = "none"
   forms.forEach((form) => {
     if (form.classList.contains("active")) {
