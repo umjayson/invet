@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bouncie Integration | Truck Tracker</title>
+    <link rel="stylesheet" href="../css/landing.css">
+    <link rel="stylesheet" href="../styles/globals.css">
+    <style>
+        .integration-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .btn-secondary {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-left: 10px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status-connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .api-key {
+            font-family: monospace;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="../index.html">Truck Tracker</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../projects.html">Projects</a></li>
+                <li><a href="../admin/dashboard.html">Dashboard</a></li>
+                <li><a href="../auth.html" class="login-btn">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="integration-container">
+                <h1>Bouncie Integration</h1>
+                <p>Connect your Bouncie account to enable real-time vehicle tracking and data synchronization.</p>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Connection Status: <span id="connectionStatus" class="status-badge status-disconnected">Disconnected</span>
+                    </div>
+                    <div id="connectionDetails">
+                        <p>Connect your Bouncie account to access vehicle data, location tracking, and trip history.</p>
+                        <a href="#" id="connectBtn" class="btn-primary">Connect to Bouncie</a>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">API Configuration</div>
+                    <div>
+                        <p><strong>API Key:</strong> <span class="api-key" id="apiKeyDisplay">••••••••••••••••</span></p>
+                        <p><strong>Redirect URI:</strong> https://Invet.info/api/bouncie-callback</p>
+                        <div id="apiKeyInput" style="display: none;">
+                            <label for="apiKey">Enter your Bouncie API Key:</label>
+                            <input type="text" id="apiKey" class="form-control" style="width: 100%; padding: 8px; margin-top: 5px;">
+                            <button id="saveApiKey" class="btn-secondary">Save</button>
+                        </div>
+                        <button id="editApiKey" class="btn-secondary">Edit API Key</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">Test Connection</div>
+                    <div>
+                        <p>Test your connection to the Bouncie API:</p>
+                        <button id="testConnection" class="btn-secondary">Test Connection</button>
+                        <div id="testResult" style="margin-top: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Truck Tracking System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const connectBtn = document.getElementById('connectBtn');
+            const connectionStatus = document.getElementById('connectionStatus');
+            const connectionDetails = document.getElementById('connectionDetails');
+            const editApiKeyBtn = document.getElementById('editApiKey');
+            const apiKeyInput = document.getElementById('apiKeyInput');
+            const apiKeyDisplay = document.getElementById('apiKeyDisplay');
+            const saveApiKeyBtn = document.getElementById('saveApiKey');
+            const testConnectionBtn = document.getElementById('testConnection');
+            const testResult = document.getElementById('testResult');
+            
+            // Check if we have an API key stored
+            const apiKey = localStorage.getItem('bouncie_api_key');
+            if (apiKey) {
+                apiKeyDisplay.textContent = '••••' + apiKey.substring(apiKey.length - 4);
+            }
+            
+            // Check if we have an auth code or token
+            const authCode = localStorage.getItem('bouncie_auth_code');
+            const accessToken = localStorage.getItem('bouncie_access_token');
+            
+            if (accessToken) {
+                connectionStatus.textContent = 'Connected';
+                connectionStatus.className = 'status-badge status-connected';
+                connectionDetails.innerHTML = `
+                    <p>Your Bouncie account is connected. You can now access vehicle data.</p>
+                    <button id="disconnectBtn" class="btn-secondary">Disconnect</button>
+                `;
+                
+                document.getElementById('disconnectBtn').addEventListener('click', function() {
+                    localStorage.removeItem('bouncie_access_token');
+                    localStorage.removeItem('bouncie_refresh_token');
+                    localStorage.removeItem('bouncie_auth_code');
+                    window.location.reload();
+                });
+            } else if (authCode) {
+                connectionStatus.textContent = 'Partially Connected';
+                connectionStatus.className = 'status-badge status-connected';
+                connectionDetails.innerHTML = `
+                    <p>Authorization code received, but token exchange not completed.</p>
+                    <p>In a production environment, you would exchange this code for an access token.</p>
+                    <button id="resetAuthBtn" class="btn-secondary">Reset Authorization</button>
+                `;
+                
+                document.getElementById('resetAuthBtn').addEventListener('click', function() {
+                    localStorage.removeItem('bouncie_auth_code');
+                    window.location.reload();
+                });
+            }
+            
+            // Connect button
+            connectBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Construct the OAuth URL
+                const authUrl = 'https://auth.bouncie.com/dialog/authorize' +
+                    '?response_type=code' +
+                    '&client_id=invet' +
+                    '&redirect_uri=https://Invet.info/api/bouncie-callback';
+                
+                // Open the authorization URL
+                window.location.href = authUrl;
+            });
+            
+            // Edit API Key
+            editApiKeyBtn.addEventListener('click', function() {
+                apiKeyInput.style.display = 'block';
+                document.getElementById('apiKey').value = apiKey || '';
+            });
+            
+            // Save API Key
+            saveApiKeyBtn.addEventListener('click', function() {
+                const newApiKey = document.getElementById('apiKey').value.trim();
+                if (newApiKey) {
+                    localStorage.setItem('bouncie_api_key', newApiKey);
+                    apiKeyDisplay.textContent = '••••' + newApiKey.substring(newApiKey.length - 4);
+                    apiKeyInput.style.display = 'none';
+                }
+            });
+            
+            // Test Connection
+            testConnectionBtn.addEventListener('click', function() {
+                testResult.innerHTML = '<p>Testing connection...</p>';
+                
+                // Simple test to check if the Bouncie API is reachable
+                fetch('https://api.bouncie.com', {
+                    method: 'HEAD'
+                })
+                .then(response => {
+                    testResult.innerHTML = `
+                        <p style="color: green;">✓ Bouncie API is reachable</p>
+                        <p>Status: ${response.status}</p>
+                    `;
+                })
+                .catch(error => {
+                    testResult.innerHTML = `
+                        <p style="color: red;">✗ Connection failed</p>
+                        <p>Error: ${error.message}</p>
+                        <p>Note: This is expected for CORS reasons when testing from a browser.</p>
+                    `;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
