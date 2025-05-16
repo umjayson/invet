@@ -3,93 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bouncie Authorization</title>
+    <title>Bouncie Authorization - InvetChat</title>
     <link rel="stylesheet" href="../../css/landing.css">
-    <link rel="stylesheet" href="../../styles/globals.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .auth-container {
             max-width: 600px;
             margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        
+        .status-card {
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            background-color: #fff;
+            margin-bottom: 25px;
         }
-        .status {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
+        
+        .status-success {
+            background-color: #e6f7ee;
+            color: #0d8a4e;
             border: 1px solid #c3e6cb;
         }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
+        
+        .status-error {
+            background-color: #feeaea;
+            color: #d63031;
             border: 1px solid #f5c6cb;
         }
-        .loading {
+        
+        .status-loading {
             background-color: #e2f3f5;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
-        pre {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
+        
+        .code-display {
+            background-color: #f7f9fc;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            border: 1px solid #e1e5ee;
             overflow-x: auto;
         }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
+        
+        .steps {
+            margin: 25px 0;
+        }
+        
+        .steps ol {
+            padding-left: 20px;
+        }
+        
+        .steps li {
+            margin-bottom: 10px;
+        }
+        
+        .action-buttons {
+            margin-top: 30px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav>
+    <header class="header">
+        <div class="container">
             <div class="logo">
-                <a href="../../index.html">Truck Tracker</a>
+                <img src="../../assets/logo.svg" alt="InvetChat Logo">
+                <h1>InvetChat</h1>
             </div>
-            <ul class="nav-links">
-                <li><a href="../../index.html">Home</a></li>
-                <li><a href="../../projects.html">Projects</a></li>
-                <li><a href="../../auth.html" class="login-btn">Login</a></li>
-            </ul>
-        </nav>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="../../index.html#features">Features</a></li>
+                    <li><a href="../../index.html#how-it-works">How It Works</a></li>
+                    <li><a href="../../index.html#testimonials">Testimonials</a></li>
+                    <li><a href="../../index.html#pricing">Pricing</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="../../auth.html" class="btn btn-outline">Login</a>
+                <a href="../../auth.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
     </header>
 
-    <main>
+    <section class="integration-section">
         <div class="container">
             <div class="auth-container">
-                <h1>Bouncie Authorization</h1>
-                <div id="status" class="status loading">
-                    Processing authorization...
+                <h2><i class="fas fa-car"></i> Bouncie Authorization</h2>
+                
+                <div id="statusCard" class="status-card status-loading">
+                    <p><i class="fas fa-spinner fa-spin"></i> Processing authorization...</p>
                 </div>
-                <div id="result"></div>
-                <a href="../../admin/dashboard.html" class="btn" id="continueBtn" style="display: none;">Continue to Dashboard</a>
+                
+                <div id="resultContent"></div>
+                
+                <div class="action-buttons">
+                    <a href="../../integrations/bouncie.html" class="btn btn-outline">Back to Integration</a>
+                    <a href="../../admin/dashboard.html" id="dashboardBtn" class="btn btn-primary" style="display: none;">Go to Dashboard</a>
+                </div>
             </div>
         </div>
-    </main>
+    </section>
 
-    <footer>
+    <footer class="footer">
         <div class="container">
-            <p>&copy; 2023 Truck Tracking System. All rights reserved.</p>
+            <div class="footer-grid">
+                <div class="footer-company">
+                    <div class="logo">
+                        <img src="../../assets/logo.svg" alt="InvetChat Logo">
+                        <h2>InvetChat</h2>
+                    </div>
+                    <p>AI-powered inventory management made simple.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-links-column">
+                        <h3>Product</h3>
+                        <ul>
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Pricing</a></li>
+                            <li><a href="#">Integrations</a></li>
+                            <li><a href="#">Changelog</a></li>
+                            <li><a href="#">Roadmap</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API Reference</a></li>
+                            <li><a href="#">Community</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-column">
+                        <h3>Company</h3>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Partners</a></li>
+                            <li><a href="#">Legal</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 InvetChat. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const statusDiv = document.getElementById('status');
-            const resultDiv = document.getElementById('result');
-            const continueBtn = document.getElementById('continueBtn');
+            const statusCard = document.getElementById('statusCard');
+            const resultContent = document.getElementById('resultContent');
+            const dashboardBtn = document.getElementById('dashboardBtn');
             
             // Get the authorization code from URL
             const urlParams = new URLSearchParams(window.location.search);
@@ -97,14 +184,14 @@
             const error = urlParams.get('error');
             
             if (error) {
-                statusDiv.className = 'status error';
-                statusDiv.textContent = 'Authorization failed: ' + error;
+                statusCard.className = 'status-card status-error';
+                statusCard.innerHTML = `<p><i class="fas fa-exclamation-circle"></i> Authorization failed: ${error}</p>`;
                 return;
             }
             
             if (!code) {
-                statusDiv.className = 'status error';
-                statusDiv.textContent = 'No authorization code received';
+                statusCard.className = 'status-card status-error';
+                statusCard.innerHTML = `<p><i class="fas fa-exclamation-circle"></i> No authorization code received</p>`;
                 return;
             }
             
@@ -112,26 +199,37 @@
             // Since this is a static site, we'll need to use a serverless function or backend service
             // For now, we'll show the code and instructions
             
-            statusDiv.className = 'status success';
-            statusDiv.textContent = 'Authorization code received successfully!';
+            statusCard.className = 'status-card status-success';
+            statusCard.innerHTML = `<p><i class="fas fa-check-circle"></i> Authorization code received successfully!</p>`;
             
-            resultDiv.innerHTML = `
-                <p>Your authorization code is:</p>
-                <pre>${code}</pre>
-                <p>In a production environment, you would now:</p>
+            resultContent.innerHTML = `
+                <h3>Authorization Code</h3>
+                <div class="code-display">${code}</div>
+                
+                <div class="steps">
+                    <p>In a production environment, you would now:</p>
+                    <ol>
+                        <li>Send this code to your backend server</li>
+                        <li>Exchange it for an access token using the OAuth 2.0 Token URL</li>
+                        <li>Store the token securely for API calls</li>
+                    </ol>
+                    <p>Since this is a static site, you'll need to implement a serverless function or backend service to complete the OAuth flow.</p>
+                </div>
+                
+                <h3>Next Steps</h3>
+                <p>To complete the integration, you would need to:</p>
                 <ol>
-                    <li>Send this code to your backend server</li>
-                    <li>Exchange it for an access token using the OAuth 2.0 Token URL</li>
-                    <li>Store the token securely for API calls</li>
+                    <li>Set up a serverless function to handle the token exchange</li>
+                    <li>Securely store the access token</li>
+                    <li>Use the token to make API calls to Bouncie</li>
                 </ol>
-                <p>Since this is a static site, you'll need to implement a serverless function or backend service to complete the OAuth flow.</p>
             `;
             
             // Store the code in localStorage for demo purposes
             // In production, NEVER store tokens in localStorage
             localStorage.setItem('bouncie_auth_code', code);
             
-            continueBtn.style.display = 'inline-block';
+            dashboardBtn.style.display = 'inline-block';
         });
     </script>
 </body>
