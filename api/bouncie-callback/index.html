@@ -3,44 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects</title>
-    <link rel="stylesheet" href="../css/landing.css">
-    <link rel="stylesheet" href="../styles/globals.css">
+    <title>Bouncie Authorization</title>
+    <link rel="stylesheet" href="../../css/landing.css">
+    <link rel="stylesheet" href="../../styles/globals.css">
+    <style>
+        .auth-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background-color: #e2f3f5;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav>
             <div class="logo">
-                <a href="../index.html">Truck Tracker</a>
+                <a href="../../index.html">Truck Tracker</a>
             </div>
             <ul class="nav-links">
-                <li><a href="../index.html">Home</a></li>
-                <li><a href="index.html" class="active">Projects</a></li>
-                <li><a href="../auth.html" class="login-btn">Login</a></li>
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../projects.html">Projects</a></li>
+                <li><a href="../../auth.html" class="login-btn">Login</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section class="projects-section">
-            <div class="container">
-                <h1>Our Projects</h1>
-                <div class="project-grid">
-                    <div class="project-card">
-                        <h2>Fleet Management System</h2>
-                        <p>Real-time tracking and management for commercial fleets.</p>
-                    </div>
-                    <div class="project-card">
-                        <h2>Driver App</h2>
-                        <p>Mobile application for drivers to manage routes and deliveries.</p>
-                    </div>
-                    <div class="project-card">
-                        <h2>Analytics Dashboard</h2>
-                        <p>Comprehensive reporting and analytics for fleet performance.</p>
-                    </div>
+        <div class="container">
+            <div class="auth-container">
+                <h1>Bouncie Authorization</h1>
+                <div id="status" class="status loading">
+                    Processing authorization...
                 </div>
+                <div id="result"></div>
+                <a href="../../admin/dashboard.html" class="btn" id="continueBtn" style="display: none;">Continue to Dashboard</a>
             </div>
-        </section>
+        </div>
     </main>
 
     <footer>
@@ -48,5 +84,55 @@
             <p>&copy; 2023 Truck Tracking System. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDiv = document.getElementById('status');
+            const resultDiv = document.getElementById('result');
+            const continueBtn = document.getElementById('continueBtn');
+            
+            // Get the authorization code from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'Authorization failed: ' + error;
+                return;
+            }
+            
+            if (!code) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = 'No authorization code received';
+                return;
+            }
+            
+            // We need to exchange the code for a token
+            // Since this is a static site, we'll need to use a serverless function or backend service
+            // For now, we'll show the code and instructions
+            
+            statusDiv.className = 'status success';
+            statusDiv.textContent = 'Authorization code received successfully!';
+            
+            resultDiv.innerHTML = `
+                <p>Your authorization code is:</p>
+                <pre>${code}</pre>
+                <p>In a production environment, you would now:</p>
+                <ol>
+                    <li>Send this code to your backend server</li>
+                    <li>Exchange it for an access token using the OAuth 2.0 Token URL</li>
+                    <li>Store the token securely for API calls</li>
+                </ol>
+                <p>Since this is a static site, you'll need to implement a serverless function or backend service to complete the OAuth flow.</p>
+            `;
+            
+            // Store the code in localStorage for demo purposes
+            // In production, NEVER store tokens in localStorage
+            localStorage.setItem('bouncie_auth_code', code);
+            
+            continueBtn.style.display = 'inline-block';
+        });
+    </script>
 </body>
 </html>
