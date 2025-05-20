@@ -29,21 +29,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // In a real implementation, you would exchange the code for an access token
     // by making a request to your backend API
 
-    // For demo purposes, we'll simulate a successful response after a delay
+    // Get credentials from localStorage (for demo purposes only)
+    const apiKey = localStorage.getItem("bouncie_api_key")
+    const clientId = localStorage.getItem("bouncie_client_id")
+    const clientSecret = localStorage.getItem("bouncie_client_secret")
+
+    if (!apiKey || !clientId || !clientSecret) {
+      // Missing credentials - show error with instructions
+      loadingState.classList.add("hidden")
+      errorState.classList.remove("hidden")
+      errorMessage.innerHTML = `
+        Missing Bouncie credentials. Please follow these steps:<br><br>
+        1. Go back to the <a href="../../integrations.html" class="text-blue-600 hover:underline">Integrations page</a><br>
+        2. Click on "Connect Bouncie" again<br>
+        3. Fill in all the credential fields<br>
+        4. Make sure you're not in incognito/private browsing mode<br>
+        5. Try again
+      `
+      return
+    }
+
+    // For demo purposes, simulate a successful response after a delay
     setTimeout(() => {
-      // Get credentials from localStorage (for demo purposes only)
-      const apiKey = localStorage.getItem("bouncie_api_key")
-      const clientId = localStorage.getItem("bouncie_client_id")
-      const clientSecret = localStorage.getItem("bouncie_client_secret")
-
-      if (!apiKey || !clientId || !clientSecret) {
-        // Missing credentials
-        loadingState.classList.add("hidden")
-        errorState.classList.remove("hidden")
-        errorMessage.textContent = "Missing Bouncie credentials"
-        return
-      }
-
       // Show success state
       loadingState.classList.add("hidden")
       successState.classList.remove("hidden")
