@@ -1,364 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InvetChat - Inventory Management Chat System</title>
-    <link rel="stylesheet" href="css/landing.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InvetChat - AI-powered Inventory Management</title>
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="images/invetchat-logo.png">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <img src="assets/logo.svg" alt="InvetChat Logo">
-                <h1>InvetChat</h1>
-            </div>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                </ul>
-            </nav>
-            <div class="auth-buttons">
-                <a href="auth.html" class="btn btn-outline">Login</a>
-                <a href="auth.html" class="btn btn-primary">Sign Up</a>
-            </div>
-            <button class="mobile-menu-toggle">
-                <i class="fas fa-bars"></i>
-            </button>
+  <div class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+      <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <a href="/" class="flex items-center">
+              <img src="images/invetchat-logo.png" alt="InvetChat Logo" width="40" height="40" class="mr-2">
+              <span class="text-xl font-bold text-gray-900">InvetChat</span>
+            </a>
+          </div>
+
+          <!-- Desktop Navigation -->
+          <nav class="hidden md:flex items-center space-x-8">
+            <a href="features.html" class="text-gray-600 hover:text-blue-600">Features</a>
+            <a href="how-it-works.html" class="text-gray-600 hover:text-blue-600">How It Works</a>
+            <a href="testimonials.html" class="text-gray-600 hover:text-blue-600">Testimonials</a>
+            <a href="pricing.html" class="text-gray-600 hover:text-blue-600">Pricing</a>
+          </nav>
+
+          <div class="hidden md:flex items-center space-x-4">
+            <a href="login.html" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Login</a>
+            <a href="sign-up.html" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Sign Up</a>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button class="md:hidden" id="mobile-menu-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
+
+        <!-- Mobile Navigation -->
+        <nav class="md:hidden mt-4 pt-4 border-t hidden" id="mobile-menu">
+          <ul class="flex flex-col space-y-4">
+            <li>
+              <a href="features.html" class="block text-gray-600 hover:text-blue-600">Features</a>
+            </li>
+            <li>
+              <a href="how-it-works.html" class="block text-gray-600 hover:text-blue-600">How It Works</a>
+            </li>
+            <li>
+              <a href="testimonials.html" class="block text-gray-600 hover:text-blue-600">Testimonials</a>
+            </li>
+            <li>
+              <a href="pricing.html" class="block text-gray-600 hover:text-blue-600">Pricing</a>
+            </li>
+            <li class="pt-4 flex flex-col space-y-2">
+              <a href="login.html" class="block text-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Login</a>
+              <a href="sign-up.html" class="block text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Sign Up</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </header>
 
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1>Streamline Your Inventory Management with AI-Powered Chat</h1>
-                <p>InvetChat combines inventory management with intelligent chat to help you track, manage, and optimize your inventory in real-time.</p>
-                <div class="hero-buttons">
-                    <a href="auth.html" class="btn btn-primary">Get Started</a>
-                    <a href="#demo" class="btn btn-outline">Watch Demo</a>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="assets/hero-image.svg" alt="InvetChat Dashboard">
-            </div>
-        </div>
-    </section>
+    <!-- Main Content -->
+    <main class="flex-grow">
+      <div class="container mx-auto px-4 py-12">
+        <section class="py-12 md:py-24 lg:py-32 flex flex-col items-center text-center">
+          <h1 class="text-4xl md:text-6xl font-bold mb-6">AI-powered Inventory Management Made Simple</h1>
+          <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl">
+            InvetChat helps businesses streamline their inventory processes with intelligent automation and real-time
+            tracking.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="sign-up.html" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">Get Started</a>
+            <a href="how-it-works.html" class="px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 text-center">Learn More</a>
+          </div>
+        </section>
 
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Key Features</h2>
-                <p>Everything you need to manage your inventory efficiently</p>
+        <section class="py-12 md:py-24">
+          <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">Key Features</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-blue-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">Real-time Tracking</h3>
+              <p class="text-gray-600">
+                Monitor your inventory levels in real-time with accurate tracking and alerts.
+              </p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-comments"></i>
-                    </div>
-                    <h3>AI-Powered Chat</h3>
-                    <p>Interact with your inventory system using natural language. Ask questions, get insights, and make updates through simple chat.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Real-time Analytics</h3>
-                    <p>Get instant insights into your inventory performance with real-time analytics and customizable dashboards.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <h3>Smart Alerts</h3>
-                    <p>Receive proactive notifications about low stock, expiring items, and other critical inventory events.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Team Collaboration</h3>
-                    <p>Work together with your team in real-time with shared access, role-based permissions, and activity tracking.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Mobile Access</h3>
-                    <p>Manage your inventory on the go with our responsive mobile interface and dedicated mobile app.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-plug"></i>
-                    </div>
-                    <h3>Easy Integration</h3>
-                    <p>Connect with your existing tools and systems through our extensive API and pre-built integrations.</p>
-                </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-blue-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">AI Predictions</h3>
+              <p class="text-gray-600">
+                Leverage AI to predict inventory needs and optimize stock levels automatically.
+              </p>
             </div>
-        </div>
-    </section>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6 text-blue-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold mb-2">Seamless Integrations</h3>
+              <p class="text-gray-600">
+                Connect with popular services like Bouncie for comprehensive fleet management.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
 
-    <section id="how-it-works" class="how-it-works">
-        <div class="container">
-            <div class="section-header">
-                <h2>How It Works</h2>
-                <p>Simple, intuitive, and powerful inventory management</p>
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div class="col-span-1">
+            <a href="/" class="flex items-center mb-4">
+              <img src="images/invetchat-logo.png" alt="InvetChat Logo" width="40" height="40" class="mr-2">
+              <span class="text-xl font-bold text-gray-900">InvetChat</span>
+            </a>
+            <p class="text-gray-600 mb-4">AI-powered inventory management made simple.</p>
+            <div class="flex space-x-4">
+              <a href="https://twitter.com" class="text-gray-400 hover:text-gray-500">
+                <span class="sr-only">Twitter</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                </svg>
+              </a>
+              <a href="https://facebook.com" class="text-gray-400 hover:text-gray-500">
+                <span class="sr-only">Facebook</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    fill-rule="evenodd"
+                    d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </a>
+              <a href="https://instagram.com" class="text-gray-400 hover:text-gray-500">
+                <span class="sr-only">Instagram</span>
+                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    fill-rule="evenodd"
+                    d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </a>
             </div>
-            <div class="steps">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Connect Your Inventory</h3>
-                        <p>Import your existing inventory data or start fresh with our easy-to-use setup wizard.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Chat with InvetChat AI</h3>
-                        <p>Ask questions, update inventory, and get insights using natural language commands.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Collaborate with Your Team</h3>
-                        <p>Invite team members, assign roles, and work together in real-time.</p>
-                    </div>
-                </div>
-                <div class="step">
-                    <div class="step-number">4</div>
-                    <div class="step-content">
-                        <h3>Monitor and Optimize</h3>
-                        <p>Track performance, receive alerts, and optimize your inventory based on AI recommendations.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+          </div>
 
-    <section id="testimonials" class="testimonials">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Our Customers Say</h2>
-                <p>Trusted by businesses of all sizes</p>
-            </div>
-            <div class="testimonial-slider">
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"InvetChat has revolutionized how we manage our warehouse inventory. The AI chat interface makes it incredibly easy to check stock levels and place orders."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="assets/testimonial-1.jpg" alt="Sarah Johnson">
-                        <div class="author-info">
-                            <h4>Sarah Johnson</h4>
-                            <p>Inventory Manager, TechSupply Co.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"We've reduced stockouts by 75% and improved order fulfillment times by 40% since implementing InvetChat. The ROI has been incredible."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="assets/testimonial-2.jpg" alt="Michael Chen">
-                        <div class="author-info">
-                            <h4>Michael Chen</h4>
-                            <p>Operations Director, Global Retail Inc.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="testimonial">
-                    <div class="testimonial-content">
-                        <p>"The team collaboration features have been a game-changer for our multi-location business. Everyone stays in sync, and the AI helps prevent mistakes."</p>
-                    </div>
-                    <div class="testimonial-author">
-                        <img src="assets/testimonial-3.jpg" alt="Jessica Martinez">
-                        <div class="author-info">
-                            <h4>Jessica Martinez</h4>
-                            <p>CEO, Martinez Distribution</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
-        </div>
-    </section>
+          <div class="col-span-1">
+            <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">Product</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="features.html" class="text-gray-600 hover:text-gray-900">Features</a>
+              </li>
+              <li>
+                <a href="pricing.html" class="text-gray-600 hover:text-gray-900">Pricing</a>
+              </li>
+              <li>
+                <a href="integrations.html" class="text-gray-600 hover:text-gray-900">Integrations</a>
+              </li>
+              <li>
+                <a href="changelog.html" class="text-gray-600 hover:text-gray-900">Changelog</a>
+              </li>
+              <li>
+                <a href="roadmap.html" class="text-gray-600 hover:text-gray-900">Roadmap</a>
+              </li>
+            </ul>
+          </div>
 
-    <section id="pricing" class="pricing">
-        <div class="container">
-            <div class="section-header">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>Choose the plan that's right for your business</p>
-            </div>
-            <div class="pricing-toggle">
-                <span>Monthly</span>
-                <label class="switch">
-                    <input type="checkbox" id="pricing-toggle">
-                    <span class="slider round"></span>
-                </label>
-                <span>Annually <span class="save-badge">Save 20%</span></span>
-            </div>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Starter</h3>
-                        <div class="pricing-price">
-                            <span class="currency">$</span>
-                            <span class="amount monthly">29</span>
-                            <span class="amount annually">23</span>
-                            <span class="period">/month</span>
-                        </div>
-                        <p>Perfect for small businesses</p>
-                    </div>
-                    <div class="pricing-features">
-                        <ul>
-                            <li><i class="fas fa-check"></i> Up to 1,000 inventory items</li>
-                            <li><i class="fas fa-check"></i> 3 team members</li>
-                            <li><i class="fas fa-check"></i> Basic AI chat capabilities</li>
-                            <li><i class="fas fa-check"></i> Standard reports</li>
-                            <li><i class="fas fa-check"></i> Email support</li>
-                        </ul>
-                    </div>
-                    <div class="pricing-action">
-                        <a href="auth.html" class="btn btn-outline">Get Started</a>
-                    </div>
-                </div>
-                <div class="pricing-card popular">
-                    <div class="popular-badge">Most Popular</div>
-                    <div class="pricing-header">
-                        <h3>Professional</h3>
-                        <div class="pricing-price">
-                            <span class="currency">$</span>
-                            <span class="amount monthly">79</span>
-                            <span class="amount annually">63</span>
-                            <span class="period">/month</span>
-                        </div>
-                        <p>Ideal for growing businesses</p>
-                    </div>
-                    <div class="pricing-features">
-                        <ul>
-                            <li><i class="fas fa-check"></i> Up to 10,000 inventory items</li>
-                            <li><i class="fas fa-check"></i> 10 team members</li>
-                            <li><i class="fas fa-check"></i> Advanced AI chat capabilities</li>
-                            <li><i class="fas fa-check"></i> Custom reports</li>
-                            <li><i class="fas fa-check"></i> Priority support</li>
-                            <li><i class="fas fa-check"></i> API access</li>
-                        </ul>
-                    </div>
-                    <div class="pricing-action">
-                        <a href="auth.html" class="btn btn-primary">Get Started</a>
-                    </div>
-                </div>
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Enterprise</h3>
-                        <div class="pricing-price">
-                            <span class="currency">$</span>
-                            <span class="amount monthly">199</span>
-                            <span class="amount annually">159</span>
-                            <span class="period">/month</span>
-                        </div>
-                        <p>For large-scale operations</p>
-                    </div>
-                    <div class="pricing-features">
-                        <ul>
-                            <li><i class="fas fa-check"></i> Unlimited inventory items</li>
-                            <li><i class="fas fa-check"></i> Unlimited team members</li>
-                            <li><i class="fas fa-check"></i> Premium AI capabilities</li>
-                            <li><i class="fas fa-check"></i> Advanced analytics</li>
-                            <li><i class="fas fa-check"></i> 24/7 dedicated support</li>
-                            <li><i class="fas fa-check"></i> Custom integrations</li>
-                            <li><i class="fas fa-check"></i> Dedicated account manager</li>
-                        </ul>
-                    </div>
-                    <div class="pricing-action">
-                        <a href="auth.html" class="btn btn-outline">Contact Sales</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+          <div class="col-span-1">
+            <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">Resources</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="documentation.html" class="text-gray-600 hover:text-gray-900">Documentation</a>
+              </li>
+              <li>
+                <a href="guides.html" class="text-gray-600 hover:text-gray-900">Guides</a>
+              </li>
+              <li>
+                <a href="api-reference.html" class="text-gray-600 hover:text-gray-900">API Reference</a>
+              </li>
+              <li>
+                <a href="community.html" class="text-gray-600 hover:text-gray-900">Community</a>
+              </li>
+              <li>
+                <a href="blog.html" class="text-gray-600 hover:text-gray-900">Blog</a>
+              </li>
+            </ul>
+          </div>
 
-    <section class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Ready to Transform Your Inventory Management?</h2>
-                <p>Join thousands of businesses that use InvetChat to streamline their operations.</p>
-                <a href="auth.html" class="btn btn-primary">Get Started for Free</a>
-                <p class="cta-note">No credit card required. 14-day free trial.</p>
-            </div>
+          <div class="col-span-1">
+            <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase mb-4">Company</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="about-us.html" class="text-gray-600 hover:text-gray-900">About Us</a>
+              </li>
+              <li>
+                <a href="careers.html" class="text-gray-600 hover:text-gray-900">Careers</a>
+              </li>
+              <li>
+                <a href="contact.html" class="text-gray-600 hover:text-gray-900">Contact</a>
+              </li>
+              <li>
+                <a href="partners.html" class="text-gray-600 hover:text-gray-900">Partners</a>
+              </li>
+              <li>
+                <a href="legal.html" class="text-gray-600 hover:text-gray-900">Legal</a>
+              </li>
+            </ul>
+          </div>
         </div>
-    </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-company">
-                    <div class="logo">
-                        <img src="assets/logo.svg" alt="InvetChat Logo">
-                        <h2>InvetChat</h2>
-                    </div>
-                    <p>AI-powered inventory management made simple.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <div class="footer-links-column">
-                        <h3>Product</h3>
-                        <ul>
-                            <li><a href="#">Features</a></li>
-                            <li><a href="#">Pricing</a></li>
-                            <li><a href="#">Integrations</a></li>
-                            <li><a href="#">Changelog</a></li>
-                            <li><a href="#">Roadmap</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links-column">
-                        <h3>Resources</h3>
-                        <ul>
-                            <li><a href="#">Documentation</a></li>
-                            <li><a href="#">Guides</a></li>
-                            <li><a href="#">API Reference</a></li>
-                            <li><a href="#">Community</a></li>
-                            <li><a href="#">Blog</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links-column">
-                        <h3>Company</h3>
-                        <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Contact</a></li>
-                            <li><a href="#">Partners</a></li>
-                            <li><a href="#">Legal</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 InvetChat. All rights reserved.</p>
-                <div class="footer-bottom-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
-                </div>
-            </div>
+        <div class="mt-12 border-t border-gray-200 pt-8">
+          <p class="text-sm text-gray-500">&copy; <span id="current-year"></span> InvetChat. All rights reserved.</p>
         </div>
+      </div>
     </footer>
+  </div>
 
-    <script src="js/landing.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
