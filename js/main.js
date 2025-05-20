@@ -1,89 +1,27 @@
 // Set current year in footer
 document.getElementById("current-year").textContent = new Date().getFullYear()
 
-// Theme toggle functionality
-const themeToggle = document.getElementById("theme-toggle")
-const floatingThemeToggle = document.getElementById("floating-theme-toggle")
-const sunIcon = document.getElementById("sun-icon")
-const moonIcon = document.getElementById("moon-icon")
-const floatingSunIcon = document.getElementById("floating-sun-icon")
-const floatingMoonIcon = document.getElementById("floating-moon-icon")
-const htmlElement = document.documentElement
+// Mobile menu toggle
+const mobileMenuButton = document.getElementById("mobile-menu-button")
+const mobileMenu = document.getElementById("mobile-menu")
 
-// Check for saved theme preference or use system preference
-const savedTheme = localStorage.getItem("theme")
-const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
-const initialTheme = savedTheme || (systemPrefersDark ? "dark" : "light")
-
-// Set initial theme
-setTheme(initialTheme)
-
-// Theme toggle event listeners
-if (themeToggle) {
-  themeToggle.addEventListener("click", toggleTheme)
-}
-
-if (floatingThemeToggle) {
-  floatingThemeToggle.addEventListener("click", toggleTheme)
-}
-
-function toggleTheme() {
-  const currentTheme = htmlElement.classList.contains("dark") ? "dark" : "light"
-  const newTheme = currentTheme === "dark" ? "light" : "dark"
-  setTheme(newTheme)
-  localStorage.setItem("theme", newTheme)
-}
-
-function setTheme(theme) {
-  if (theme === "dark") {
-    htmlElement.classList.add("dark")
-    if (sunIcon) sunIcon.classList.remove("hidden")
-    if (moonIcon) moonIcon.classList.add("hidden")
-    if (floatingSunIcon) floatingSunIcon.classList.remove("hidden")
-    if (floatingMoonIcon) floatingMoonIcon.classList.add("hidden")
-  } else {
-    htmlElement.classList.remove("dark")
-    if (sunIcon) sunIcon.classList.add("hidden")
-    if (moonIcon) moonIcon.classList.remove("hidden")
-    if (floatingSunIcon) floatingSunIcon.classList.add("hidden")
-    if (floatingMoonIcon) floatingMoonIcon.classList.remove("hidden")
-  }
-}
-
-// Firebase config warning
-const firebaseWarning = document.getElementById("firebase-warning")
-const closeFirebaseWarning = document.getElementById("close-firebase-warning")
-
-if (closeFirebaseWarning) {
-  closeFirebaseWarning.addEventListener("click", () => {
-    firebaseWarning.classList.add("hidden")
-    localStorage.setItem("firebase-warning-dismissed", "true")
+if (mobileMenuButton && mobileMenu) {
+  mobileMenuButton.addEventListener("click", () => {
+    // Toggle the menu visibility
+    if (mobileMenu.classList.contains("hidden")) {
+      mobileMenu.classList.remove("hidden")
+      mobileMenuButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      `
+    } else {
+      mobileMenu.classList.add("hidden")
+      mobileMenuButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      `
+    }
   })
 }
-
-// Check if Firebase warning was previously dismissed
-if (firebaseWarning && !localStorage.getItem("firebase-warning-dismissed")) {
-  firebaseWarning.classList.remove("hidden")
-}
-
-// Intersection Observer for scroll animations
-document.addEventListener("DOMContentLoaded", () => {
-  const animatedElements = document.querySelectorAll(".animate-on-scroll, .feature-card, .testimonial-card")
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible")
-          observer.unobserve(entry.target)
-        }
-      })
-    },
-    { threshold: 0.1 },
-  )
-
-  animatedElements.forEach((element, index) => {
-    element.style.setProperty("--index", index)
-    observer.observe(element)
-  })
-})
